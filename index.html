@@ -11,7 +11,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&family=VT323&family=Share+Tech+Mono&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -21,11 +21,19 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
+            sans: ['Outfit', 'Inter', 'sans-serif'],
             orbitron: ['Orbitron', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
+            mono: ['Share Tech Mono', 'JetBrains Mono', 'monospace'],
+            pixel: ['"VT323"', 'monospace'],
           },
           colors: {
+            borravino: {
+              DEFAULT: '#5e2e46',
+              dark: '#3b1b2b',
+              darker: '#220f19',
+              light: '#884366',
+              accent: '#d96b9d'
+            },
             lab: {
               bg: '#0d0f12',
               card: '#161920',
@@ -34,6 +42,7 @@
               cyan: '#06b6d4',
               danger: '#f43f5e',
               amber: '#f59e0b',
+              gold: '#ffd166',
             }
           }
         }
@@ -46,14 +55,23 @@
     ::-webkit-scrollbar-track { background: #0d0f12; }
     ::-webkit-scrollbar-thumb { background: #2a2f3d; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+    
+    .scanlines {
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px;
+    }
+    .border-glow { box-shadow: 0 0 15px rgba(217, 107, 157, 0.3), inset 0 0 10px rgba(94, 46, 70, 0.5); }
+    .border-glow-gold { box-shadow: 0 0 15px rgba(255, 209, 102, 0.3), inset 0 0 10px rgba(255, 209, 102, 0.2); }
     .glow-neon { box-shadow: 0 0 20px rgba(16, 185, 129, 0.25); }
-    .glow-cyan { box-shadow: 0 0 20px rgba(6, 182, 212, 0.25); }
   </style>
 </head>
 <body class="bg-lab-bg text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-black relative overflow-x-hidden">
 
+  <!-- Capa de escaneo CRT retro para cinemáticas -->
+  <div class="pointer-events-none fixed inset-0 z-50 scanlines opacity-40"></div>
+
   <!-- TOP NAVIGATION / HEADER -->
-  <header class="bg-lab-card/90 border-b border-lab-border sticky top-0 z-50 backdrop-blur-md">
+  <header class="bg-lab-card/90 border-b border-lab-border sticky top-0 z-40 backdrop-blur-md">
     <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
       
       <!-- Title & Team -->
@@ -66,23 +84,30 @@
             <span>La Vacuna Inerte</span>
             <span class="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30 font-normal">HISTORIA 3</span>
           </h1>
-          <p class="text-xs text-slate-400 font-mono">Escape Room Digital • Equipo Pecepece</p>
+          <p class="text-xs text-slate-400 font-mono">Equipo Pecepece • Escape Room & Cinemáticas</p>
         </div>
       </div>
 
-      <!-- Realtime HUD Stats -->
-      <div class="flex items-center gap-3 sm:gap-4">
-        <div class="bg-slate-950 border border-lab-border px-3.5 py-1.5 rounded-lg font-mono text-xs sm:text-sm flex items-center gap-2">
-          <i data-lucide="timer" class="w-4 h-4 text-emerald-400"></i>
-          <span id="timer-display" class="text-emerald-400 font-bold tracking-wider">00:00</span>
+      <!-- Selector de Vistas (Cinemáticas vs Mini-juegos Interactivos) -->
+      <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-lab-border">
+        <button onclick="switchAppView('cinematic')" id="nav-btn-cinematic" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition bg-emerald-500 text-slate-950 shadow">
+          🎬 Cinemáticas RPG
+        </button>
+        <button onclick="switchAppView('game')" id="nav-btn-game" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition text-slate-400 hover:text-white">
+          🧩 Minijuegos
+        </button>
+      </div>
+
+      <!-- HUD Timer (Visible en modo juego) -->
+      <div id="escape-hud" class="hidden items-center gap-3">
+        <div class="bg-slate-950 border border-lab-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5">
+          <i data-lucide="timer" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span id="timer-display" class="text-emerald-400 font-bold">00:00</span>
         </div>
-        <div class="bg-slate-950 border border-lab-border px-3.5 py-1.5 rounded-lg font-mono text-xs sm:text-sm flex items-center gap-2" title="Pistas Utilizadas">
-          <i data-lucide="lightbulb" class="w-4 h-4 text-amber-400"></i>
+        <div class="bg-slate-950 border border-lab-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5" title="Pistas Utilizadas">
+          <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-400"></i>
           <span id="hints-count-display" class="text-amber-400 font-bold">0</span>
         </div>
-        <button id="audio-toggle-btn" onclick="toggleAudio()" class="p-2 text-slate-400 hover:text-emerald-400 bg-slate-900 border border-lab-border rounded-lg transition" title="Sonido On/Off">
-          <i data-lucide="volume-2" id="audio-icon" class="w-4 h-4"></i>
-        </button>
       </div>
     </div>
 
@@ -93,287 +118,338 @@
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow flex flex-col justify-center">
+  <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow flex flex-col justify-center relative z-10">
 
-    <!-- STEP 0: PRÓLOGO - LA CONFESIÓN DE MECHA EL MAPACHE -->
-    <section id="step-0" class="space-y-6">
-      <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden glow-neon">
-        <div class="absolute -right-12 -bottom-12 opacity-5 pointer-events-none">
-          <i data-lucide="shield-alert" class="w-80 h-80 text-emerald-400"></i>
+    <!-- ========================================================================== -->
+    <!-- VISTA A: VISOR DE CINEMÁTICAS RPG (NOVELA VISUAL) -->
+    <!-- ========================================================================== -->
+    <div id="app-view-cinematic" class="w-full flex flex-col items-center justify-center space-y-4">
+      
+      <div class="w-full bg-borravino-dark/90 border-2 border-borravino-light/60 rounded-2xl overflow-hidden border-glow relative shadow-2xl flex flex-col">
+        
+        <!-- Header de Escenario -->
+        <div class="bg-borravino-darker/90 px-4 py-3 border-b border-borravino-light/30 flex justify-between items-center font-mono text-xs text-borravino-accent">
+          <span id="scene-location" class="uppercase tracking-wider flex items-center gap-2 text-lab-gold font-bold">
+            <span class="w-2.5 h-2.5 rounded-full bg-lab-gold animate-ping"></span>
+            PRÓLOGO - CÁRCEL CANINA
+          </span>
+          <span id="scene-step-counter" class="text-slate-300">ESCENA 1 / 6</span>
         </div>
 
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 text-xs font-mono mb-4">
-          <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
-          <span>TRANSMISIÓN INTERCEPTADA // 2063</span>
-        </div>
-
-        <h2 class="text-2xl sm:text-3xl font-orbitron font-extrabold text-white mb-4">Prólogo: La Confesión de Mecha el Mapache</h2>
-
-        <!-- Raccoon Card -->
-        <div class="bg-slate-950/80 border border-emerald-500/30 rounded-xl p-5 flex flex-col sm:flex-row gap-4 items-start mb-6">
-          <div class="w-20 h-20 rounded-full bg-emerald-950/80 border-2 border-emerald-400/80 flex items-center justify-center flex-shrink-0 text-3xl shadow-inner">
-            🦝
-          </div>
-          <div class="space-y-2">
-            <div class="flex items-center justify-between flex-wrap gap-2">
-              <span class="font-orbitron font-bold text-emerald-400 text-lg">Mecha "El Mapache"</span>
-              <span class="text-xs bg-slate-900 border border-slate-700 text-slate-300 px-2.5 py-0.5 rounded-full font-mono">Prisionero Voluntario</span>
+        <!-- Escenario Visual & Personaje -->
+        <div class="relative min-h-[240px] md:min-h-[300px] p-6 flex flex-col md:flex-row items-center justify-around gap-6 bg-gradient-to-b from-transparent to-borravino-darker/80">
+          
+          <div class="relative group">
+            <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-borravino-accent to-lab-gold opacity-50 blur"></div>
+            <img id="character-avatar" 
+                 src="img/mecha.jpg" 
+                 alt="Personaje"
+                 onerror="this.src='https://placehold.co/200x200/5e2e46/ffd166?text=PERSONAJE'"
+                 class="relative w-32 h-32 md:w-44 md:h-44 rounded-full border-4 border-lab-gold object-cover shadow-2xl">
+            <div id="character-badge" class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-borravino-darker border border-lab-gold text-lab-gold font-pixel text-xl px-3 py-0.5 rounded-full shadow whitespace-nowrap">
+              MECHA
             </div>
-            <p class="text-slate-300 text-sm sm:text-base leading-relaxed italic">
-              "Me dejé atrapar a propósito por la policía. En nuestro último atraco a la veterinaria del viejo <strong>Patricio</strong>, descubrimos un laboratorio secreto donde fabrican la <strong>'Vacuna Inerte'</strong> para revertir la cognición de los animales y volvernos sumisos otra vez. Mis amigos están encerrados ahí abajo. Seguí exactamente mis pistas para rescatarlos."
+          </div>
+
+          <div class="flex-1 w-full flex flex-col justify-center items-center md:items-end text-center md:text-right opacity-90 hidden md:flex">
+            <div id="scene-badge-icon" class="text-borravino-light font-pixel text-7xl select-none">
+              🦝
+            </div>
+            <p id="scene-subtitle" class="font-mono text-xs text-borravino-accent max-w-xs mt-1">
+              "Transmisión interceptada desde el pabellón de contención..."
             </p>
           </div>
         </div>
 
-        <div class="mt-8 flex justify-end">
-          <button onclick="nextStep(1)" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-base font-orbitron">
-            <span>Iniciar Infiltración</span>
-            <i data-lucide="arrow-right" class="w-5 h-5"></i>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 1: PASO 1 / ZONA A: EL MALETÍN DEL VETERINARIO PATRICIO -->
-    <section id="step-1" class="hidden space-y-6">
-      <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
-          <div>
-            <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 1 / Zona A</span>
-            <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">El Maletín del Veterinario Patricio</h2>
+        <!-- Caja de Diálogo RPG -->
+        <div class="bg-borravino-darker border-t-2 border-borravino-light p-5 md:p-6 relative min-h-[160px] flex flex-col justify-between">
+          <div class="flex items-center gap-2 mb-2">
+            <span id="speaker-name" class="font-pixel text-2xl text-lab-gold tracking-wide">Mecha el Mapache</span>
+            <span id="speaker-role" class="font-mono text-[10px] bg-borravino/80 text-borravino-accent px-2 py-0.5 rounded uppercase border border-borravino-light/30">Infiltrado</span>
           </div>
-          <button onclick="showHint(1)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
-            <i data-lucide="lightbulb" class="w-4 h-4"></i>
-            <span>Pedir Pista</span>
-          </button>
-        </div>
 
-        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-          Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras[cite: 2]. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente)[cite: 2].
-        </p>
-
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-6">
-          <div class="text-xs font-mono text-slate-400 mb-2">SECUENCIA DE SELLOS SELECCIONADA:</div>
-          <div id="selected-sequence-display-1" class="flex items-center gap-2 font-mono text-2xl text-emerald-400 min-h-[40px] flex-wrap">
-            <span class="text-slate-600 text-sm font-sans italic">Hacé clic en las fichas en orden cronológico...</span>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6" id="patient-cards-grid">
-          <button onclick="selectPatientCard('Boby', '14/08/2061', 8, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
-            <span class="font-semibold text-slate-200 block mb-1">Paciente: Caniche "Boby" (Sello: 8)</span>
-            <span class="text-xs text-slate-400 font-mono">Ingreso: 14/08/2061</span>
-          </button>
-          <button onclick="selectPatientCard('Simón', '02/01/2058', 4, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
-            <span class="font-semibold text-slate-200 block mb-1">Paciente: Felino "Simón" (Sello: 4)</span>
-            <span class="text-xs text-slate-400 font-mono">Ingreso: 02/01/2058</span>
-          </button>
-          <button onclick="selectPatientCard('Amélie', '30/11/2062', 5, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
-            <span class="font-semibold text-slate-200 block mb-1">Paciente: Zorra "Amélie" (Sello: 5)</span>
-            <span class="text-xs text-slate-400 font-mono">Ingreso: 30/11/2062</span>
-          </button>
-          <button onclick="selectPatientCard('Thor', '19/05/2059', 1, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
-            <span class="font-semibold text-slate-200 block mb-1">Paciente: Ovejero "Thor" (Sello: 1)</span>
-            <span class="text-xs text-slate-400 font-mono">Ingreso: 19/05/2059</span>
-          </button>
-        </div>
-
-        <div id="step-1-feedback" class="hidden p-3.5 rounded-xl text-sm font-semibold text-center mb-4"></div>
-
-        <div class="flex flex-wrap gap-3">
-          <button onclick="verifyStep1()" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 font-orbitron">
-            <i data-lucide="key-round" class="w-4 h-4"></i>
-            <span>Forzar Maletín (4185)</span>
-          </button>
-          <button onclick="resetStep1()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3 rounded-xl transition">
-            Reiniciar
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 2: PASO 2 / ZONA B: CONSOLA DE SEGURIDAD DEMOGRÁFICA -->
-    <section id="step-2" class="hidden space-y-6">
-      <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
-          <div>
-            <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 2 / Zona B</span>
-            <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Consola de Seguridad Demográfica</h2>
-          </div>
-          <button onclick="showHint(2)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
-            <i data-lucide="lightbulb" class="w-4 h-4"></i>
-            <span>Pedir Pista</span>
-          </button>
-        </div>
-
-        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-          Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto[cite: 13].
-        </p>
-
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 space-y-4">
-          <p class="text-slate-100 font-semibold text-base leading-snug">
-            ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?[cite: 13]
+          <p id="dialogue-text" class="font-mono text-sm md:text-base text-slate-100 leading-relaxed min-h-[70px]">
+            Cargando cinemática inicial...
           </p>
 
-          <div class="space-y-3 pt-2">
-            <label onclick="selectOptionStep2('a')" class="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl cursor-pointer transition">
-              <input type="radio" name="step2-option" value="a" class="accent-emerald-500">
-              <span class="text-sm text-slate-300">A) Un aumento acelerado de nacimientos humanos en zonas urbanas.</span>
-            </label>
-
-            <label onclick="selectOptionStep2('b')" class="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl cursor-pointer transition">
-              <input type="radio" name="step2-option" value="b" class="accent-emerald-500">
-              <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar[cite: 10, 13].</span>
-            </label>
+          <div class="w-full flex justify-between items-center mt-3 pt-2 border-t border-borravino-light/20">
+            <span class="text-xs text-slate-400 font-mono">💡 Tip: Podés usar las flechas del teclado para avanzar o retroceder.</span>
+            <span id="typing-indicator" class="font-mono text-xs text-lab-gold animate-pulse flex items-center gap-1">
+              HAZ CLIC EN CONTINUAR ➔
+            </span>
           </div>
         </div>
+      </div>
 
-        <div id="step-2-feedback" class="hidden p-3.5 rounded-xl text-sm font-semibold text-center mb-4"></div>
+      <!-- Botones de Navegación de Cinemáticas -->
+      <div class="w-full flex justify-between items-center gap-4 mt-2">
+        <button onclick="prevDialogue()" id="btn-prev" class="flex-1 bg-borravino-dark hover:bg-borravino border border-borravino-light text-slate-200 font-mono text-sm py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
+          ◀ ANTERIOR
+        </button>
 
-        <button onclick="verifyStep2()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 font-orbitron">
-          <i data-lucide="unlock" class="w-4 h-4"></i>
-          <span>Validar Respuesta y Desbloquear Celdas</span>
+        <button onclick="nextDialogue()" id="btn-next" class="flex-2 bg-gradient-to-r from-borravino to-borravino-light hover:from-borravino-light hover:to-borravino-accent border border-lab-gold text-lab-gold font-pixel text-2xl py-2 px-8 rounded-xl transition flex items-center justify-center gap-3 border-glow-gold hover:scale-105 transform active:scale-95">
+          <span>CONTINUAR</span>
+          <span class="text-xl">➔</span>
         </button>
       </div>
-    </section>
 
-    <!-- STEP 3: PASO 3 / ZONA C: HACKEO DEL SISTEMA DE VENTILACIÓN -->
-    <section id="step-3" class="hidden space-y-6">
-      <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
-          <div>
-            <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 3 / Zona C</span>
-            <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Hackeo del Sistema de Ventilación</h2>
-          </div>
-          <button onclick="showHint(3)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
-            <i data-lucide="lightbulb" class="w-4 h-4"></i>
-            <span>Pedir Pista</span>
-          </button>
-        </div>
-
-        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-          Las celdas se desbloquearon, pero el gas inmovilizador bloquea los pasillos. Para desactivar los ductos, replicá la secuencia de herramientas que preparó Mecha.
-        </p>
-
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 max-w-md mx-auto mb-6 text-center">
-          <div id="simon-status" class="text-xs sm:text-sm font-mono text-slate-300 mb-4 h-6 flex items-center justify-center">
-            Presioná "Ver Secuencia" para iniciar...
-          </div>
-
-          <div class="grid grid-cols-2 gap-4 mb-6">
-            <button id="simon-btn-0" onclick="simonUserInput(0)" class="h-28 rounded-2xl bg-red-950/60 border-2 border-red-500/50 text-red-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
-              <span class="text-3xl">🔦</span>
-              <span class="text-xs font-bold font-mono">Linterna (Rojo)</span>
-            </button>
-
-            <button id="simon-btn-1" onclick="simonUserInput(1)" class="h-28 rounded-2xl bg-emerald-950/60 border-2 border-emerald-500/50 text-emerald-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
-              <span class="text-3xl">🔑</span>
-              <span class="text-xs font-bold font-mono">Ganzúa (Verde)</span>
-            </button>
-
-            <button id="simon-btn-2" onclick="simonUserInput(2)" class="h-28 rounded-2xl bg-cyan-950/60 border-2 border-cyan-500/50 text-cyan-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
-              <span class="text-3xl">🗝️</span>
-              <span class="text-xs font-bold font-mono">Llave (Azul)</span>
-            </button>
-
-            <button id="simon-btn-3" onclick="simonUserInput(3)" class="h-28 rounded-2xl bg-amber-950/60 border-2 border-amber-500/50 text-amber-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
-              <span class="text-3xl">🧪</span>
-              <span class="text-xs font-bold font-mono">Frasco (Amarillo)</span>
-            </button>
-          </div>
-
-          <button id="start-simon-btn" onclick="playSimonSequence()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 py-3 rounded-xl transition text-sm font-orbitron">
-            Ver Secuencia
-          </button>
-        </div>
-
-        <div id="step-3-feedback" class="hidden p-3.5 rounded-xl text-sm font-semibold text-center mb-4"></div>
-      </div>
-    </section>
-
-    <!-- STEP 4: PASO 4 / ZONA D: SINTETIZADOR DEL ANTÍDOTO -->
-    <section id="step-4" class="hidden space-y-6">
-      <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
-        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
-          <div>
-            <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 4 / Zona D</span>
-            <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Sintetizador del Antídoto</h2>
-          </div>
-          <button onclick="showHint(4)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
-            <i data-lucide="lightbulb" class="w-4 h-4"></i>
-            <span>Pedir Pista</span>
-          </button>
-        </div>
-
-        <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-          ¡Ingresaste al reactor principal! Patricio programó la inyección masiva de la Vacuna Inerte. Combiná los 3 reactivos químicos en el orden exacto: <strong>1° Neuro-K (Inhibidor), 2° Sero-A (Estabilizador) y 3° Enzima-Z (Catalizador)</strong>.
-        </p>
-
-        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 mb-6 space-y-4">
-          <div class="text-xs font-mono text-slate-400">MEZCLA ACTUAL EN CÁMARA DE REACCIÓN:</div>
-          
-          <div id="chemical-sequence-display" class="flex items-center justify-center gap-3 p-4 bg-slate-900/90 rounded-xl min-h-[60px] font-mono text-sm text-emerald-400 border border-slate-800 flex-wrap">
-            <span class="text-slate-600 font-sans italic text-xs sm:text-sm">Seleccioná los tubos en orden...</span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-            <button onclick="addChemical('Neuro-K')" class="bg-slate-900 hover:bg-slate-800 border border-cyan-500/40 text-cyan-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
-              <span>🧪 Neuro-K</span>
-            </button>
-            <button onclick="addChemical('Sero-A')" class="bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
-              <span>🧬 Sero-A</span>
-            </button>
-            <button onclick="addChemical('Enzima-Z')" class="bg-slate-900 hover:bg-slate-800 border border-purple-500/40 text-purple-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
-              <span>🧫 Enzima-Z</span>
-            </button>
-          </div>
-        </div>
-
-        <div id="step-4-feedback" class="hidden p-3.5 rounded-xl text-sm font-semibold text-center mb-4"></div>
-
-        <div class="flex flex-wrap gap-3">
-          <button onclick="verifyStep4()" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 font-orbitron">
-            <i data-lucide="flask-conical" class="w-4 h-4"></i>
-            <span>Sintetizar y Neutralizar</span>
-          </button>
-          <button onclick="resetStep4()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3.5 rounded-xl transition">
-            Limpiar Mezcla
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- STEP 5: PANTALLA FINAL -->
-    <section id="step-5" class="hidden space-y-6">
-      <div class="bg-lab-card border-2 border-emerald-500 rounded-2xl p-8 sm:p-10 shadow-2xl text-center relative overflow-hidden glow-neon">
-        <div class="w-20 h-20 bg-emerald-950/80 border-2 border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-300 shadow-lg">
-          <i data-lucide="trophy" class="w-10 h-10"></i>
-        </div>
-
-        <span class="text-xs font-mono text-emerald-400 tracking-widest uppercase bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-500/30">MISIÓN CUMPLIDA</span>
-        <h2 class="text-3xl sm:text-4xl font-orbitron font-extrabold text-white mt-3 mb-4">¡Laboratorio Neutralizado!</h2>
-
-        <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-6">
-          Lograste liberar a <strong>Amélie</strong>, desactivar los servidores del Dr. Patricio y neutralizar la amenaza de la <strong>Vacuna Inerte</strong>.
-        </p>
-
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 max-w-md mx-auto grid grid-cols-2 gap-4 mb-8">
-          <div class="text-center">
-            <div class="text-xs text-slate-400 font-mono">TIEMPO FINAL</div>
-            <div id="final-time-display" class="text-2xl font-bold text-emerald-400 font-mono mt-1">00:00</div>
-          </div>
-          <div class="text-center">
-            <div class="text-xs text-slate-400 font-mono">PISTAS USADAS</div>
-            <div id="final-hints-display" class="text-2xl font-bold text-amber-400 font-mono mt-1">0</div>
-          </div>
-        </div>
-
-        <button onclick="restartGame()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-3.5 rounded-xl transition inline-flex items-center gap-2 font-orbitron">
-          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-          <span>Jugar de Nuevo</span>
+      <!-- Botón para pasar directo al juego interactivo -->
+      <div class="w-full text-center pt-2">
+        <button onclick="switchAppView('game')" class="text-xs font-mono text-emerald-400 hover:text-emerald-300 underline tracking-wider">
+          ¿Ya viste la historia? Ir directo a los Minijuegos del Escape Room ➔
         </button>
       </div>
-    </section>
+
+    </div>
+
+
+    <!-- ========================================================================== -->
+    <!-- VISTA B: MINIJUEGOS DEL ESCAPE ROOM (HISTORIA 3) -->
+    <!-- ========================================================================== -->
+    <div id="app-view-game" class="hidden space-y-6 w-full">
+
+      <!-- STEP 1: ZONA A (MALETÍN PATRICIO) -->
+      <section id="step-1" class="space-y-6">
+        <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
+            <div>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 1 / Zona A</span>
+              <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">El Maletín del Veterinario Patricio</h2>
+            </div>
+            <button onclick="showHint(1)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
+              <i data-lucide="lightbulb" class="w-4 h-4"></i>
+              <span>Pedir Pista</span>
+            </button>
+          </div>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras[cite: 2]. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente)[cite: 2].
+          </p>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-6">
+            <div class="text-xs font-mono text-slate-400 mb-2">SECUENCIA DE SELLOS SELECCIONADA:</div>
+            <div id="selected-sequence-display-1" class="flex items-center gap-2 font-mono text-2xl text-emerald-400 min-h-[40px] flex-wrap">
+              <span class="text-slate-600 text-sm font-sans italic">Hacé clic en las fichas en orden cronológico...</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6" id="patient-cards-grid">
+            <button onclick="selectPatientCard('Boby', '14/08/2061', 8, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
+              <span class="font-semibold text-slate-200 block mb-1">Paciente: Caniche "Boby" (Sello: 8)</span>
+              <span class="text-xs text-slate-400 font-mono">Ingreso: 14/08/2061</span>
+            </button>
+            <button onclick="selectPatientCard('Simón', '02/01/2058', 4, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
+              <span class="font-semibold text-slate-200 block mb-1">Paciente: Felino "Simón" (Sello: 4)</span>
+              <span class="text-xs text-slate-400 font-mono">Ingreso: 02/01/2058</span>
+            </button>
+            <button onclick="selectPatientCard('Amélie', '30/11/2062', 5, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
+              <span class="font-semibold text-slate-200 block mb-1">Paciente: Zorra "Amélie" (Sello: 5)</span>
+              <span class="text-xs text-slate-400 font-mono">Ingreso: 30/11/2062</span>
+            </button>
+            <button onclick="selectPatientCard('Thor', '19/05/2059', 1, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
+              <span class="font-semibold text-slate-200 block mb-1">Paciente: Ovejero "Thor" (Sello: 1)</span>
+              <span class="text-xs text-slate-400 font-mono">Ingreso: 19/05/2059</span>
+            </button>
+          </div>
+
+          <div id="step-1-feedback" class="hidden p-3.5 rounded-xl text-sm font-semibold text-center mb-4"></div>
+
+          <div class="flex flex-wrap gap-3">
+            <button onclick="verifyStep1()" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition flex items-center justify-center gap-2 font-orbitron">
+              <i data-lucide="key-round" class="w-4 h-4"></i>
+              <span>Forzar Maletín (4185)</span>
+            </button>
+            <button onclick="resetStep1()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3 rounded-xl transition">
+              Reiniciar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2: ZONA B (CONSOLA DEMOGRÁFICA) -->
+      <section id="step-2" class="hidden space-y-6">
+        <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
+            <div>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 2 / Zona B</span>
+              <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Consola de Seguridad Demográfica</h2>
+            </div>
+            <button onclick="showHint(2)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
+              <i data-lucide="lightbulb" class="w-4 h-4"></i>
+              <span>Pedir Pista</span>
+            </button>
+          </div>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto[cite: 13].
+          </p>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 space-y-4">
+            <p class="text-slate-100 font-semibold text-base leading-snug">
+              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?[cite: 13]
+            </p>
+
+            <div class="space-y-3 pt-2">
+              <label onclick="selectOptionStep2('a')" class="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl cursor-pointer transition">
+                <input type="radio" name="step2-option" value="a" class="accent-emerald-500">
+                <span class="text-sm text-slate-300">A) Un aumento acelerado de nacimientos humanos en zonas urbanas.</span>
+              </label>
+
+              <label onclick="selectOptionStep2('b')" class="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl cursor-pointer transition">
+                <input type="radio" name="step2-option" value="b" class="accent-emerald-500">
+                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar[cite: 10, 13].</span>
+              </label>
+            </div>
+          </div>
+
+          <div id="step-2-feedback" class="hidden p-3.5 rounded-xl text-sm font-semibold text-center mb-4"></div>
+
+          <button onclick="verifyStep2()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 font-orbitron">
+            <i data-lucide="unlock" class="w-4 h-4"></i>
+            <span>Validar Respuesta y Desbloquear Celdas</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 3: ZONA C (HACKEO DUCTOS) -->
+      <section id="step-3" class="hidden space-y-6">
+        <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
+            <div>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 3 / Zona C</span>
+              <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Hackeo del Sistema de Ventilación</h2>
+            </div>
+            <button onclick="showHint(3)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
+              <i data-lucide="lightbulb" class="w-4 h-4"></i>
+              <span>Pedir Pista</span>
+            </button>
+          </div>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+            Las celdas se desbloquearon, pero el gas inmovilizador bloquea los pasillos. Para desactivar los ductos, replicá la secuencia de herramientas que preparó Mecha.
+          </p>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 max-w-md mx-auto mb-6 text-center">
+            <div id="simon-status" class="text-xs sm:text-sm font-mono text-slate-300 mb-4 h-6 flex items-center justify-center">
+              Presioná "Ver Secuencia" para iniciar...
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6">
+              <button id="simon-btn-0" onclick="simonUserInput(0)" class="h-28 rounded-2xl bg-red-950/60 border-2 border-red-500/50 text-red-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
+                <span class="text-3xl">🔦</span>
+                <span class="text-xs font-bold font-mono">Linterna (Rojo)</span>
+              </button>
+
+              <button id="simon-btn-1" onclick="simonUserInput(1)" class="h-28 rounded-2xl bg-emerald-950/60 border-2 border-emerald-500/50 text-emerald-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
+                <span class="text-3xl">🔑</span>
+                <span class="text-xs font-bold font-mono">Ganzúa (Verde)</span>
+              </button>
+
+              <button id="simon-btn-2" onclick="simonUserInput(2)" class="h-28 rounded-2xl bg-cyan-950/60 border-2 border-cyan-500/50 text-cyan-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
+                <span class="text-3xl">🗝️</span>
+                <span class="text-xs font-bold font-mono">Llave (Azul)</span>
+              </button>
+
+              <button id="simon-btn-3" onclick="simonUserInput(3)" class="h-28 rounded-2xl bg-amber-950/60 border-2 border-amber-500/50 text-amber-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
+                <span class="text-3xl">🧪</span>
+                <span class="text-xs font-bold font-mono">Frasco (Amarillo)</span>
+              </button>
+            </div>
+
+            <button id="start-simon-btn" onclick="playSimonSequence()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-6 py-3 rounded-xl transition text-sm font-orbitron">
+              Ver Secuencia
+            </button>
+          </div>
+
+          <div id="step-3-feedback" class="hidden p-3.5 rounded-xl text-sm font-semibold text-center mb-4"></div>
+        </div>
+      </section>
+
+      <!-- STEP 4: ZONA D (ANTÍDOTO) -->
+      <section id="step-4" class="hidden space-y-6">
+        <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
+            <div>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 4 / Zona D</span>
+              <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Sintetizador del Antídoto</h2>
+            </div>
+            <button onclick="showHint(4)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
+              <i data-lucide="lightbulb" class="w-4 h-4"></i>
+              <span>Pedir Pista</span>
+            </button>
+          </div>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
+            ¡Ingresaste al reactor principal! Patricio programó la inyección masiva de la Vacuna Inerte. Combiná los 3 reactivos químicos en el orden exacto: <strong>1° Neuro-K (Inhibidor), 2° Sero-A (Estabilizador) y 3° Enzima-Z (Catalizador)</strong>.
+          </p>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 mb-6 space-y-4">
+            <div class="text-xs font-mono text-slate-400">MEZCLA ACTUAL EN CÁMARA DE REACCIÓN:</div>
+            
+            <div id="chemical-sequence-display" class="flex items-center justify-center gap-3 p-4 bg-slate-900/90 rounded-xl min-h-[60px] font-mono text-sm text-emerald-400 border border-slate-800 flex-wrap">
+              <span class="text-slate-600 font-sans italic text-xs sm:text-sm">Seleccioná los tubos en orden...</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              <button onclick="addChemical('Neuro-K')" class="bg-slate-900 hover:bg-slate-800 border border-cyan-500/40 text-cyan-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
+                <span>🧪 Neuro-K</span>
+              </button>
+              <button onclick="addChemical('Sero-A')" class="bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
+                <span>🧬 Sero-A</span>
+              </button>
+              <button onclick="addChemical('Enzima-Z')" class="bg-slate-900 hover:bg-slate-800 border border-purple-500/40 text-purple-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
+                <span>🧫 Enzima-Z</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="step-4-feedback" class="hidden p-3.5 rounded-xl text-sm font-semibold text-center mb-4"></div>
+
+          <div class="flex flex-wrap gap-3">
+            <button onclick="verifyStep4()" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3.5 rounded-xl transition flex items-center justify-center gap-2 font-orbitron">
+              <i data-lucide="flask-conical" class="w-4 h-4"></i>
+              <span>Sintetizar y Neutralizar</span>
+            </button>
+            <button onclick="resetStep4()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3.5 rounded-xl transition">
+              Limpiar Mezcla
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 5: PANTALLA FINAL -->
+      <section id="step-5" class="hidden space-y-6">
+        <div class="bg-lab-card border-2 border-emerald-500 rounded-2xl p-8 sm:p-10 shadow-2xl text-center relative overflow-hidden glow-neon">
+          <div class="w-20 h-20 bg-emerald-950/80 border-2 border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-300 shadow-lg">
+            <i data-lucide="trophy" class="w-10 h-10"></i>
+          </div>
+
+          <span class="text-xs font-mono text-emerald-400 tracking-widest uppercase bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-500/30">MISIÓN CUMPLIDA</span>
+          <h2 class="text-3xl sm:text-4xl font-orbitron font-extrabold text-white mt-3 mb-4">¡Laboratorio Neutralizado!</h2>
+
+          <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-6">
+            Lograste liberar a <strong>Amélie</strong>, desactivar los servidores del Dr. Patricio y neutralizar la amenaza de la <strong>Vacuna Inerte</strong>.
+          </p>
+
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 max-w-md mx-auto grid grid-cols-2 gap-4 mb-8">
+            <div class="text-center">
+              <div class="text-xs text-slate-400 font-mono">TIEMPO FINAL</div>
+              <div id="final-time-display" class="text-2xl font-bold text-emerald-400 font-mono mt-1">00:00</div>
+            </div>
+            <div class="text-center">
+              <div class="text-xs text-slate-400 font-mono">PISTAS USADAS</div>
+              <div id="final-hints-display" class="text-2xl font-bold text-amber-400 font-mono mt-1">0</div>
+            </div>
+          </div>
+
+          <button onclick="restartGame()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-3.5 rounded-xl transition inline-flex items-center gap-2 font-orbitron">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            <span>Jugar de Nuevo</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
 
   </main>
 
@@ -398,14 +474,84 @@
     <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece[cite: 6]</p>
   </footer>
 
-  <!-- JAVASCRIPT GAME LOGIC -->
+  <!-- SCRIPT INTEGRADO (CINEMÁTICAS + LÓGICA DE JUEGO) -->
   <script>
+    // --- ESTADO GENERAL Y VISTAS ---
+    let currentAppView = 'cinematic'; // 'cinematic' o 'game'
+    let currentSceneIndex = 0;
+    let isTyping = false;
+    let typeWriterTimer = null;
+    let audioEnabled = true;
+
+    // Escenas de las Cinemáticas RPG
+    const storyScenes = [
+      {
+        id: 0,
+        location: "PRÓLOGO - CÁRCEL DE LA POLICÍA CANINA",
+        speaker: "Mecha el Mapache",
+        role: "Infiltrado del Equipo Pecepece",
+        avatar: "img/mecha.jpg",
+        icon: "🦝",
+        subtitle: "Transmisión interceptada desde el pabellón de contención.",
+        text: "Pasaron 7 años desde que los animales nos integramos a la sociedad. Hoy trabajamos como policías, bomberos y profesionales... pero alguien quiere arrebatarnos la libertad. Me dejé atrapar a propósito por la policía para contártelo: en nuestro último atraco al viejo veterinario Patricio, descubrimos su laboratorio secreto. Está fabricando la 'Vacuna Inerte' para volvernos sumisos. Mis amigos están encerrados ahí abajo. Seguí exactamente mis pistas para rescatarlos."
+      },
+      {
+        id: 1,
+        location: "PASO 1 - CONSULTORIO ABANDONADO DE PATRICIO",
+        speaker: "Amélie la Zorra Ártica",
+        role: "Especialista en Infiltración",
+        avatar: "img/amelie.jpg",
+        icon: "🦊",
+        subtitle: "Búsqueda de accesos en la superficie.",
+        text: "Te infiltraste con éxito en el consultorio abandonado de Patricio. Para descender al laboratorio subterráneo, necesitás abrir su maletín personal. Una nota adhesiva pegada al costado indica que sus pacientes animales más antiguos guardan la clave secreta de 4 dígitos en estricto orden cronológico. ¡Revisá los expedientes rápidamente[cite: 2]!"
+      },
+      {
+        id: 2,
+        location: "PASO 2 - TERMINAL DEL LABORATORIO SUBTERRÁNEO",
+        speaker: "Dr. Patricio",
+        role: "Veterinario / Antagonista",
+        avatar: "img/patricio.jpg",
+        icon: "👨‍⚕️",
+        subtitle: "Registro informático en la consola central.",
+        text: "¡Maletín abierto! Al girar la manivela, una compuerta secreta en el piso revela el laboratorio clandestino[cite: 2]. Huele a químicos y jaulas frías. Frente a vos hay una terminal con gráficos sobre la caída de natalidad humana y el auge de mascotas. Para desactivar el bloqueo de las celdas, el sistema de seguridad te exige validar los datos sociológicos del caso[cite: 13]."
+      },
+      {
+        id: 3,
+        location: "PASO 3 - DUCTOS DE VENTILACIÓN Y ALARMAS",
+        speaker: "Mecha el Mapache",
+        role: "Canal de Radio de Emergencia",
+        avatar: "img/mecha.jpg",
+        icon: "⚡",
+        subtitle: "Transmisión de audio con interferencia.",
+        text: "¡Terminal desbloqueada! Las celdas empiezan a destrabarse, pero las alarmas secundarias se encendieron. El sistema automático de la veterinaria sella las salidas. ¡Rápido! Hackeá la secuencia de botones del conducto de ventilación para limpiar el humo de contención antes de que llegue la patrulla canina."
+      },
+      {
+        id: 4,
+        location: "PASO 4 - EL SINTETIZADOR DE LA VACUNA INERTE",
+        speaker: "Amélie la Zorra Ártica",
+        role: "Laboratorio Central",
+        avatar: "img/amelie.jpg",
+        icon: "🧪",
+        subtitle: "Neutralización del reactivo químico.",
+        text: "Sortearon los conductos y están frente al tanque central de la 'Vacuna Inerte'. En la mesa hay frascos de reactivos y los cuadernos de notas de Patricio. Tenés que mezclar los tres compuestos químicos en el orden exacto para neutralizar la fórmula antes de que el veterinario regrese."
+      },
+      {
+        id: 5,
+        location: "FINAL - LA LIBERACIÓN DE LOS ANIMALES",
+        speaker: "Equipo Pecepece",
+        role: "Misión Cumplida",
+        avatar: "img/mecha.jpg",
+        icon: "🏆",
+        subtitle: "La revuelta de las mascotas ha triunfado.",
+        text: "¡Lo lograste! El tanque emite una luz verde brillante y la fórmula de la Vacuna Inerte se neutraliza por completo. Las jaulas se abren de golpe y todos los animales prisioneros escapan junto con Mecha por la claraboya hacia la ciudad. ¡La libertad está a salvo gracias a tu astucia!"
+      }
+    ];
+
+    // Variables de Juego (Escape Room)
     let currentStep = 0;
     let timerSeconds = 0;
     let timerInterval = null;
     let hintsUsedCount = 0;
-    let audioEnabled = true;
-
     let step1SelectedCards = [];
     let step2SelectedValue = null;
     let simonSequence = [0, 1, 2, 0];
@@ -415,7 +561,7 @@
     const step4CorrectSequence = ['Neuro-K', 'Sero-A', 'Enzima-Z'];
 
     const hintsData = {
-      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185.",
+      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185[cite: 2].",
       2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar[cite: 10, 13].",
       3: "La secuencia de herramientas es: Rojo (Linterna) ➔ Verde (Ganzúa) ➔ Azul (Llave) ➔ Rojo (Linterna).",
       4: "Seguí las instrucciones científicas: 1° Neuro-K (Inhibidor), 2° Sero-A (Estabilizador) y 3° Enzima-Z (Catalizador)."
@@ -423,11 +569,145 @@
 
     window.onload = function() {
       lucide.createIcons();
+      renderScene(0);
       updateProgressBar();
       startTimer();
+
+      // Atajos de teclado para cinemáticas
+      document.addEventListener('keydown', function(event) {
+        if (currentAppView === 'cinematic') {
+          if (event.code === 'Space' || event.code === 'ArrowRight') {
+            event.preventDefault();
+            nextDialogue();
+          } else if (event.code === 'ArrowLeft') {
+            event.preventDefault();
+            prevDialogue();
+          }
+        }
+      });
     };
 
-    // --- TIMER SYSTEM ---
+    // --- CAMBIO DE VISTA (CINEMÁTICA VS JUEGO) ---
+    function switchAppView(view) {
+      currentAppView = view;
+      const btnCine = document.getElementById('nav-btn-cinematic');
+      const btnGame = document.getElementById('nav-btn-game');
+      const viewCine = document.getElementById('app-view-cinematic');
+      const viewGame = document.getElementById('app-view-game');
+      const hud = document.getElementById('escape-hud');
+
+      if (view === 'cinematic') {
+        btnCine.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition bg-emerald-500 text-slate-950 shadow";
+        btnGame.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition text-slate-400 hover:text-white";
+        viewCine.classList.remove('hidden');
+        viewGame.classList.add('hidden');
+        hud.classList.add('hidden');
+      } else {
+        btnGame.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition bg-emerald-500 text-slate-950 shadow";
+        btnCine.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition text-slate-400 hover:text-white";
+        viewGame.classList.remove('hidden');
+        viewCine.classList.add('hidden');
+        hud.classList.remove('hidden');
+      }
+    }
+
+    // --- RENDERIZADO DE CINEMÁTICAS ---
+    let audioCtx = null;
+    function playBeep(freq = 440, type = 'sine', duration = 0.05, vol = 0.03) {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function renderScene(index) {
+      const scene = storyScenes[index];
+      document.getElementById('scene-location').innerHTML = `
+        <span class="w-2.5 h-2.5 rounded-full bg-lab-gold animate-ping"></span>
+        ${scene.location}
+      `;
+      document.getElementById('scene-step-counter').innerText = `ESCENA ${index + 1} / ${storyScenes.length}`;
+      document.getElementById('speaker-name').innerText = scene.speaker;
+      document.getElementById('speaker-role').innerText = scene.role;
+      document.getElementById('scene-subtitle').innerText = `"${scene.subtitle}"`;
+      document.getElementById('scene-badge-icon').innerText = scene.icon;
+
+      const avatarImg = document.getElementById('character-avatar');
+      avatarImg.src = scene.avatar;
+      document.getElementById('character-badge').innerText = scene.speaker.split(' ')[0].toUpperCase();
+
+      document.getElementById('btn-prev').disabled = (index === 0);
+      const btnNext = document.getElementById('btn-next');
+      if (index === storyScenes.length - 1) {
+        btnNext.innerHTML = `<span>IR A JUGAR</span> <span class="text-xl">🎮</span>`;
+      } else {
+        btnNext.innerHTML = `<span>CONTINUAR</span> <span class="text-xl">➔</span>`;
+      }
+
+      startTypewriter(scene.text);
+    }
+
+    function startTypewriter(fullText) {
+      const dialogueElement = document.getElementById('dialogue-text');
+      const indicator = document.getElementById('typing-indicator');
+      
+      clearInterval(typeWriterTimer);
+      dialogueElement.innerText = "";
+      isTyping = true;
+      indicator.style.opacity = "0.3";
+
+      let charIndex = 0;
+      typeWriterTimer = setInterval(() => {
+        if (charIndex < fullText.length) {
+          dialogueElement.innerText += fullText.charAt(charIndex);
+          if (charIndex % 3 === 0) playBeep(300 + Math.random() * 80, 'sine', 0.03, 0.01);
+          charIndex++;
+        } else {
+          clearInterval(typeWriterTimer);
+          isTyping = false;
+          indicator.style.opacity = "1";
+          playBeep(520, 'triangle', 0.08, 0.02);
+        }
+      }, 25);
+    }
+
+    function nextDialogue() {
+      if (isTyping) {
+        clearInterval(typeWriterTimer);
+        document.getElementById('dialogue-text').innerText = storyScenes[currentSceneIndex].text;
+        document.getElementById('typing-indicator').style.opacity = "1";
+        isTyping = false;
+        return;
+      }
+
+      if (currentSceneIndex < storyScenes.length - 1) {
+        currentSceneIndex++;
+        renderScene(currentSceneIndex);
+      } else {
+        // Al terminar las cinemáticas, pasa automáticamente al modo Minijuegos
+        switchAppView('game');
+      }
+    }
+
+    function prevDialogue() {
+      if (currentSceneIndex > 0) {
+        currentSceneIndex--;
+        renderScene(currentSceneIndex);
+      }
+    }
+
+    // --- LÓGICA DE JUEGO (ESCAPE ROOM) ---
     function startTimer() {
       if (timerInterval) clearInterval(timerInterval);
       timerInterval = setInterval(() => {
@@ -443,7 +723,6 @@
       if (timerInterval) clearInterval(timerInterval);
     }
 
-    // --- NAVIGATION ---
     function nextStep(targetStep) {
       document.getElementById(`step-${currentStep}`).classList.add('hidden');
       currentStep = targetStep;
@@ -454,9 +733,9 @@
         stopTimer();
         document.getElementById('final-time-display').innerText = document.getElementById('timer-display').innerText;
         document.getElementById('final-hints-display').innerText = hintsUsedCount;
-        playSound(800, 'sine', 0.5);
+        playBeep(800, 'sine', 0.5, 0.05);
       } else {
-        playSound(440, 'sine', 0.15);
+        playBeep(440, 'sine', 0.15, 0.03);
       }
     }
 
@@ -473,29 +752,28 @@
       const hintsDisplay = document.getElementById('hints-count-display');
       if (hintsDisplay) hintsDisplay.innerText = '0';
       currentStep = 0;
-      document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-      document.getElementById('step-0').classList.remove('hidden');
+      document.querySelectorAll('#app-view-game section').forEach(s => s.classList.add('hidden'));
+      document.getElementById('step-1').classList.remove('hidden');
       updateProgressBar();
       startTimer();
     }
 
-    // --- HINT SYSTEM ---
     function showHint(step) {
       hintsUsedCount++;
       const hintsDisplay = document.getElementById('hints-count-display');
       if (hintsDisplay) hintsDisplay.innerText = hintsUsedCount;
       document.getElementById('hint-text-display').innerText = hintsData[step];
       document.getElementById('hint-modal').classList.remove('hidden');
-      playSound(300, 'sine', 0.15);
+      playBeep(300, 'sine', 0.15, 0.03);
     }
 
     function closeHintModal() {
       document.getElementById('hint-modal').classList.add('hidden');
     }
 
-    // --- STEP 1 LOGIC ---
+    // Step 1 Logic
     function selectPatientCard(name, date, stamp, element) {
-      playSound(350, 'triangle', 0.1);
+      playBeep(350, 'triangle', 0.1, 0.03);
       const exists = step1SelectedCards.some(c => c.name === name);
       if (exists) return;
       step1SelectedCards.push({ name, date, stamp });
@@ -541,10 +819,10 @@
       }
     }
 
-    // --- STEP 2 LOGIC ---
+    // Step 2 Logic
     function selectOptionStep2(val) {
       step2SelectedValue = val;
-      playSound(300, 'sine', 0.1);
+      playBeep(300, 'sine', 0.1, 0.03);
     }
 
     function verifyStep2() {
@@ -560,7 +838,7 @@
       }
     }
 
-    // --- STEP 3 LOGIC (SIMON) ---
+    // Step 3 Logic (Simon)
     function playSimonSequence() {
       if (isSimonPlaying) return;
       isSimonPlaying = true;
@@ -583,10 +861,10 @@
 
     function flashSimonButton(index) {
       const btn = document.getElementById(`simon-btn-${index}`);
-      btn.classList.add('scale-105', 'brightness-150', 'glow-cyan');
-      playSound(250 + index * 100, 'sine', 0.2);
+      btn.classList.add('scale-105', 'brightness-150', 'ring-2', 'ring-cyan-400');
+      playBeep(250 + index * 100, 'sine', 0.2, 0.03);
       setTimeout(() => {
-        btn.classList.remove('scale-105', 'brightness-150', 'glow-cyan');
+        btn.classList.remove('scale-105', 'brightness-150', 'ring-2', 'ring-cyan-400');
       }, 400);
     }
 
@@ -608,10 +886,10 @@
       }
     }
 
-    // --- STEP 4 LOGIC ---
+    // Step 4 Logic
     function addChemical(name) {
       if (step4SelectedChemicals.length >= 3) return;
-      playSound(500, 'square', 0.1);
+      playBeep(500, 'square', 0.1, 0.03);
       step4SelectedChemicals.push(name);
       renderStep4Display();
     }
@@ -649,54 +927,22 @@
       }
     }
 
-    // --- UTILITIES & AUDIO ---
     function showFeedback(step, text, type) {
       const el = document.getElementById(`step-${step}-feedback`);
       el.innerText = text;
       el.classList.remove('hidden', 'bg-emerald-950/80', 'text-emerald-300', 'border-emerald-500/50', 'bg-red-950/80', 'text-red-300', 'border-red-500/50');
       if (type === 'success') {
         el.classList.add('bg-emerald-950/80', 'text-emerald-300', 'border', 'border-emerald-500/50');
-        playSound(600, 'sine', 0.2);
+        playBeep(600, 'sine', 0.2, 0.04);
       } else {
         el.classList.add('bg-red-950/80', 'text-red-300', 'border', 'border-red-500/50');
-        playSound(150, 'sawtooth', 0.25);
+        playBeep(150, 'sawtooth', 0.25, 0.04);
       }
     }
 
     function hideFeedback(step) {
       const el = document.getElementById(`step-${step}-feedback`);
       if (el) el.classList.add('hidden');
-    }
-
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function toggleAudio() {
-      audioEnabled = !audioEnabled;
-      const icon = document.getElementById('audio-icon');
-      if (audioEnabled) {
-        icon.setAttribute('data-lucide', 'volume-2');
-      } else {
-        icon.setAttribute('data-lucide', 'volume-x');
-      }
-      lucide.createIcons();
-    }
-
-    function playSound(freq, type = 'sine', duration = 0.1) {
-      if (!audioEnabled) return;
-      try {
-        if (!audioCtx) audioCtx = new AudioContext();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {}
     }
   </script>
 </body>
