@@ -88,7 +88,7 @@
         </div>
       </div>
 
-      <!-- Selector de Vistas (Cinemáticas vs Mini-juegos Interactivos) -->
+      <!-- Selector de Vistas -->
       <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-lab-border">
         <button onclick="switchAppView('cinematic')" id="nav-btn-cinematic" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition bg-emerald-500 text-slate-950 shadow">
           🎬 Cinemáticas RPG
@@ -98,7 +98,7 @@
         </button>
       </div>
 
-      <!-- HUD Timer (Visible en modo juego) -->
+      <!-- HUD Timer -->
       <div id="escape-hud" class="hidden items-center gap-3">
         <div class="bg-slate-950 border border-lab-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5">
           <i data-lucide="timer" class="w-3.5 h-3.5 text-emerald-400"></i>
@@ -121,7 +121,7 @@
   <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow flex flex-col justify-center relative z-10">
 
     <!-- ========================================================================== -->
-    <!-- VISTA A: VISOR DE CINEMÁTICAS RPG (NOVELA VISUAL) -->
+    <!-- VISTA A: VISOR DE CINEMÁTICAS RPG -->
     <!-- ========================================================================== -->
     <div id="app-view-cinematic" class="w-full flex flex-col items-center justify-center space-y-4">
       
@@ -204,7 +204,7 @@
 
 
     <!-- ========================================================================== -->
-    <!-- VISTA B: MINIJUEGOS DEL ESCAPE ROOM (HISTORIA 3) -->
+    <!-- VISTA B: MINIJUEGOS DEL ESCAPE ROOM -->
     <!-- ========================================================================== -->
     <div id="app-view-game" class="hidden space-y-6 w-full">
 
@@ -223,7 +223,7 @@
           </div>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras[cite: 2]. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente)[cite: 2].
+            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente).
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-6">
@@ -281,12 +281,12 @@
           </div>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto[cite: 13].
+            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto.
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 space-y-4">
             <p class="text-slate-100 font-semibold text-base leading-snug">
-              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?[cite: 13]
+              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?
             </p>
 
             <div class="space-y-3 pt-2">
@@ -297,7 +297,7 @@
 
               <label onclick="selectOptionStep2('b')" class="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl cursor-pointer transition">
                 <input type="radio" name="step2-option" value="b" class="accent-emerald-500">
-                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar[cite: 10, 13].</span>
+                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar.</span>
               </label>
             </div>
           </div>
@@ -471,19 +471,17 @@
 
   <!-- FOOTER -->
   <footer class="bg-lab-card/80 border-t border-lab-border py-4 text-center text-xs text-slate-500">
-    <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece[cite: 6]</p>
+    <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece</p>
   </footer>
 
-  <!-- SCRIPT INTEGRADO (CINEMÁTICAS + LÓGICA DE JUEGO) -->
+  <!-- SCRIPT INTEGRADO -->
   <script>
-    // --- ESTADO GENERAL Y VISTAS ---
-    let currentAppView = 'cinematic'; // 'cinematic' o 'game'
+    let currentAppView = 'cinematic';
     let currentSceneIndex = 0;
     let isTyping = false;
     let typeWriterTimer = null;
     let audioEnabled = true;
 
-    // Escenas de las Cinemáticas RPG
     const storyScenes = [
       {
         id: 0,
@@ -503,7 +501,7 @@
         avatar: "img/amelie.jpg",
         icon: "🦊",
         subtitle: "Búsqueda de accesos en la superficie.",
-        text: "Te infiltraste con éxito en el consultorio abandonado de Patricio. Para descender al laboratorio subterráneo, necesitás abrir su maletín personal. Una nota adhesiva pegada al costado indica que sus pacientes animales más antiguos guardan la clave secreta de 4 dígitos en estricto orden cronológico. ¡Revisá los expedientes rápidamente[cite: 2]!"
+        text: "Te infiltraste con éxito en el consultorio abandonado de Patricio. Para descender al laboratorio subterráneo, necesitás abrir su maletín personal. Una nota adhesiva pegada al costado indica que sus pacientes animales más antiguos guardan la clave secreta de 4 dígitos en estricto orden cronológico. ¡Revisá los expedientes rápidamente!"
       },
       {
         id: 2,
@@ -513,7 +511,7 @@
         avatar: "img/patricio.jpg",
         icon: "👨‍⚕️",
         subtitle: "Registro informático en la consola central.",
-        text: "¡Maletín abierto! Al girar la manivela, una compuerta secreta en el piso revela el laboratorio clandestino[cite: 2]. Huele a químicos y jaulas frías. Frente a vos hay una terminal con gráficos sobre la caída de natalidad humana y el auge de mascotas. Para desactivar el bloqueo de las celdas, el sistema de seguridad te exige validar los datos sociológicos del caso[cite: 13]."
+        text: "¡Maletín abierto! Al girar la manivela, una compuerta secreta en el piso revela el laboratorio clandestino. Huele a químicos y jaulas frías. Frente a vos hay una terminal con gráficos sobre la caída de natalidad humana y el auge de mascotas. Para desactivar el bloqueo de las celdas, el sistema de seguridad te exige validar los datos sociológicos del caso."
       },
       {
         id: 3,
@@ -547,7 +545,6 @@
       }
     ];
 
-    // Variables de Juego (Escape Room)
     let currentStep = 0;
     let timerSeconds = 0;
     let timerInterval = null;
@@ -561,8 +558,8 @@
     const step4CorrectSequence = ['Neuro-K', 'Sero-A', 'Enzima-Z'];
 
     const hintsData = {
-      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185[cite: 2].",
-      2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar[cite: 10, 13].",
+      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185.",
+      2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar.",
       3: "La secuencia de herramientas es: Rojo (Linterna) ➔ Verde (Ganzúa) ➔ Azul (Llave) ➔ Rojo (Linterna).",
       4: "Seguí las instrucciones científicas: 1° Neuro-K (Inhibidor), 2° Sero-A (Estabilizador) y 3° Enzima-Z (Catalizador)."
     };
@@ -573,7 +570,6 @@
       updateProgressBar();
       startTimer();
 
-      // Atajos de teclado para cinemáticas
       document.addEventListener('keydown', function(event) {
         if (currentAppView === 'cinematic') {
           if (event.code === 'Space' || event.code === 'ArrowRight') {
@@ -587,7 +583,6 @@
       });
     };
 
-    // --- CAMBIO DE VISTA (CINEMÁTICA VS JUEGO) ---
     function switchAppView(view) {
       currentAppView = view;
       const btnCine = document.getElementById('nav-btn-cinematic');
@@ -611,7 +606,6 @@
       }
     }
 
-    // --- RENDERIZADO DE CINEMÁTICAS ---
     let audioCtx = null;
     function playBeep(freq = 440, type = 'sine', duration = 0.05, vol = 0.03) {
       if (!audioEnabled) return;
@@ -695,7 +689,6 @@
         currentSceneIndex++;
         renderScene(currentSceneIndex);
       } else {
-        // Al terminar las cinemáticas, pasa automáticamente al modo Minijuegos
         switchAppView('game');
       }
     }
@@ -707,7 +700,6 @@
       }
     }
 
-    // --- LÓGICA DE JUEGO (ESCAPE ROOM) ---
     function startTimer() {
       if (timerInterval) clearInterval(timerInterval);
       timerInterval = setInterval(() => {
@@ -771,7 +763,6 @@
       document.getElementById('hint-modal').classList.add('hidden');
     }
 
-    // Step 1 Logic
     function selectPatientCard(name, date, stamp, element) {
       playBeep(350, 'triangle', 0.1, 0.03);
       const exists = step1SelectedCards.some(c => c.name === name);
@@ -819,7 +810,6 @@
       }
     }
 
-    // Step 2 Logic
     function selectOptionStep2(val) {
       step2SelectedValue = val;
       playBeep(300, 'sine', 0.1, 0.03);
@@ -838,7 +828,6 @@
       }
     }
 
-    // Step 3 Logic (Simon)
     function playSimonSequence() {
       if (isSimonPlaying) return;
       isSimonPlaying = true;
@@ -886,7 +875,6 @@
       }
     }
 
-    // Step 4 Logic
     function addChemical(name) {
       if (step4SelectedChemicals.length >= 3) return;
       playBeep(500, 'square', 0.1, 0.03);
