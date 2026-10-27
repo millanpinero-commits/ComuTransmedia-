@@ -84,22 +84,12 @@
             <span>La Vacuna Inerte</span>
             <span class="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30 font-normal">HISTORIA 3</span>
           </h1>
-          <p class="text-xs text-slate-400 font-mono">Equipo Pecepece • Escape Room & Cinemáticas</p>
+          <p class="text-xs text-slate-400 font-mono">Equipo Pecepece • Escape Room Cinemático</p>
         </div>
       </div>
 
-      <!-- Selector de Vistas -->
-      <div class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-lab-border">
-        <button onclick="switchAppView('cinematic')" id="nav-btn-cinematic" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition bg-emerald-500 text-slate-950 shadow">
-          🎬 Cinemáticas RPG
-        </button>
-        <button onclick="switchAppView('game')" id="nav-btn-game" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition text-slate-400 hover:text-white">
-          🧩 Minijuegos
-        </button>
-      </div>
-
-      <!-- HUD Timer -->
-      <div id="escape-hud" class="hidden items-center gap-3">
+      <!-- HUD Timer & Pistas -->
+      <div id="escape-hud" class="flex items-center gap-3">
         <div class="bg-slate-950 border border-lab-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5">
           <i data-lucide="timer" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span id="timer-display" class="text-emerald-400 font-bold">00:00</span>
@@ -121,10 +111,9 @@
   <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow flex flex-col justify-center relative z-10">
 
     <!-- ========================================================================== -->
-    <!-- VISTA A: VISOR DE CINEMÁTICAS RPG -->
+    <!-- MÓDULO DE CINEMÁTICAS RPG (SE MUESTRA ANTES DE CADA JUEGO) -->
     <!-- ========================================================================== -->
-    <div id="app-view-cinematic" class="w-full flex flex-col items-center justify-center space-y-4">
-      
+    <div id="cinematic-container" class="w-full flex flex-col items-center justify-center space-y-4">
       <div class="w-full bg-borravino-dark/90 border-2 border-borravino-light/60 rounded-2xl overflow-hidden border-glow relative shadow-2xl flex flex-col">
         
         <!-- Header de Escenario -->
@@ -133,12 +122,11 @@
             <span class="w-2.5 h-2.5 rounded-full bg-lab-gold animate-ping"></span>
             PRÓLOGO - CÁRCEL CANINA
           </span>
-          <span id="scene-step-counter" class="text-slate-300">ESCENA 1 / 6</span>
+          <span id="scene-step-counter" class="text-slate-300">FASE 1 / 5</span>
         </div>
 
         <!-- Escenario Visual & Personaje -->
         <div class="relative min-h-[240px] md:min-h-[300px] p-6 flex flex-col md:flex-row items-center justify-around gap-6 bg-gradient-to-b from-transparent to-borravino-darker/80">
-          
           <div class="relative group">
             <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-borravino-accent to-lab-gold opacity-50 blur"></div>
             <img id="character-avatar" 
@@ -156,7 +144,7 @@
               🦝
             </div>
             <p id="scene-subtitle" class="font-mono text-xs text-borravino-accent max-w-xs mt-1">
-              "Transmisión interceptada desde el pabellón de contención..."
+              "Transmisión interceptada..."
             </p>
           </div>
         </div>
@@ -173,7 +161,7 @@
           </p>
 
           <div class="w-full flex justify-between items-center mt-3 pt-2 border-t border-borravino-light/20">
-            <span class="text-xs text-slate-400 font-mono">💡 Tip: Podés usar las flechas del teclado para avanzar o retroceder.</span>
+            <span class="text-xs text-slate-400 font-mono">💡 Tip: Usá la barra espaciadora o el botón para avanzar.</span>
             <span id="typing-indicator" class="font-mono text-xs text-lab-gold animate-pulse flex items-center gap-1">
               HAZ CLIC EN CONTINUAR ➔
             </span>
@@ -181,39 +169,27 @@
         </div>
       </div>
 
-      <!-- Botones de Navegación de Cinemáticas -->
-      <div class="w-full flex justify-between items-center gap-4 mt-2">
-        <button onclick="prevDialogue()" id="btn-prev" class="flex-1 bg-borravino-dark hover:bg-borravino border border-borravino-light text-slate-200 font-mono text-sm py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
-          ◀ ANTERIOR
-        </button>
-
-        <button onclick="nextDialogue()" id="btn-next" class="flex-2 bg-gradient-to-r from-borravino to-borravino-light hover:from-borravino-light hover:to-borravino-accent border border-lab-gold text-lab-gold font-pixel text-2xl py-2 px-8 rounded-xl transition flex items-center justify-center gap-3 border-glow-gold hover:scale-105 transform active:scale-95">
-          <span>CONTINUAR</span>
+      <!-- Botón de Acción de la Cinemática -->
+      <div class="w-full flex justify-end">
+        <button onclick="advanceCinematic()" id="btn-cinematic-action" class="w-full sm:w-auto bg-gradient-to-r from-borravino to-borravino-light hover:from-borravino-light hover:to-borravino-accent border border-lab-gold text-lab-gold font-pixel text-2xl py-3 px-10 rounded-xl transition flex items-center justify-center gap-3 border-glow-gold hover:scale-105 transform active:scale-95">
+          <span id="btn-cinematic-text">CONTINUAR CINEMÁTICA</span>
           <span class="text-xl">➔</span>
         </button>
       </div>
-
-      <!-- Botón para pasar directo al juego interactivo -->
-      <div class="w-full text-center pt-2">
-        <button onclick="switchAppView('game')" class="text-xs font-mono text-emerald-400 hover:text-emerald-300 underline tracking-wider">
-          ¿Ya viste la historia? Ir directo a los Minijuegos del Escape Room ➔
-        </button>
-      </div>
-
     </div>
 
 
     <!-- ========================================================================== -->
-    <!-- VISTA B: MINIJUEGOS DEL ESCAPE ROOM -->
+    <!-- MÓDULO DE MINIJUEGOS DEL ESCAPE ROOM (SE ABRE AL TERMINAR SU CINEMÁTICA) -->
     <!-- ========================================================================== -->
-    <div id="app-view-game" class="hidden space-y-6 w-full">
+    <div id="game-container" class="hidden space-y-6 w-full">
 
-      <!-- STEP 1: ZONA A (MALETÍN PATRICIO) -->
+      <!-- PASO 1 / ZONA A: MALETÍN PATRICIO -->
       <section id="step-1" class="space-y-6">
         <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
             <div>
-              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 1 / Zona A</span>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Desafío 1 / Zona A</span>
               <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">El Maletín del Veterinario Patricio</h2>
             </div>
             <button onclick="showHint(1)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
@@ -223,7 +199,7 @@
           </div>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente).
+            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras[cite: 2]. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente)[cite: 2].
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-6">
@@ -266,12 +242,12 @@
         </div>
       </section>
 
-      <!-- STEP 2: ZONA B (CONSOLA DEMOGRÁFICA) -->
+      <!-- PASO 2 / ZONA B: CONSOLA DEMOGRÁFICA -->
       <section id="step-2" class="hidden space-y-6">
         <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
             <div>
-              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 2 / Zona B</span>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Desafío 2 / Zona B</span>
               <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Consola de Seguridad Demográfica</h2>
             </div>
             <button onclick="showHint(2)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
@@ -281,12 +257,12 @@
           </div>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto.
+            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto[cite: 13].
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 space-y-4">
             <p class="text-slate-100 font-semibold text-base leading-snug">
-              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?
+              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?[cite: 13]
             </p>
 
             <div class="space-y-3 pt-2">
@@ -297,7 +273,7 @@
 
               <label onclick="selectOptionStep2('b')" class="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl cursor-pointer transition">
                 <input type="radio" name="step2-option" value="b" class="accent-emerald-500">
-                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar.</span>
+                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar[cite: 10, 13].</span>
               </label>
             </div>
           </div>
@@ -311,12 +287,12 @@
         </div>
       </section>
 
-      <!-- STEP 3: ZONA C (HACKEO DUCTOS) -->
+      <!-- PASO 3 / ZONA C: HACKEO DUCTOS -->
       <section id="step-3" class="hidden space-y-6">
         <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
             <div>
-              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 3 / Zona C</span>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Desafío 3 / Zona C</span>
               <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Hackeo del Sistema de Ventilación</h2>
             </div>
             <button onclick="showHint(3)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
@@ -365,12 +341,12 @@
         </div>
       </section>
 
-      <!-- STEP 4: ZONA D (ANTÍDOTO) -->
+      <!-- PASO 4 / ZONA D: ANTÍDOTO -->
       <section id="step-4" class="hidden space-y-6">
         <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
             <div>
-              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Paso 4 / Zona D</span>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Desafío 4 / Zona D</span>
               <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Sintetizador del Antídoto</h2>
             </div>
             <button onclick="showHint(4)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
@@ -417,7 +393,7 @@
         </div>
       </section>
 
-      <!-- STEP 5: PANTALLA FINAL -->
+      <!-- PASO 5: PANTALLA FINAL -->
       <section id="step-5" class="hidden space-y-6">
         <div class="bg-lab-card border-2 border-emerald-500 rounded-2xl p-8 sm:p-10 shadow-2xl text-center relative overflow-hidden glow-neon">
           <div class="w-20 h-20 bg-emerald-950/80 border-2 border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-300 shadow-lg">
@@ -471,18 +447,13 @@
 
   <!-- FOOTER -->
   <footer class="bg-lab-card/80 border-t border-lab-border py-4 text-center text-xs text-slate-500">
-    <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece</p>
+    <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece[cite: 6]</p>
   </footer>
 
-  <!-- SCRIPT INTEGRADO -->
+  <!-- SCRIPT INTEGRADO: CINEMÁTICA ANTES DE CADA JUEGO -->
   <script>
-    let currentAppView = 'cinematic';
-    let currentSceneIndex = 0;
-    let isTyping = false;
-    let typeWriterTimer = null;
-    let audioEnabled = true;
-
-    const storyScenes = [
+    // Estructura de cinemáticas conectadas 1 a 1 antes de cada juego
+    const storyCinematics = [
       {
         id: 0,
         location: "PRÓLOGO - CÁRCEL DE LA POLICÍA CANINA",
@@ -491,7 +462,8 @@
         avatar: "img/mecha.jpg",
         icon: "🦝",
         subtitle: "Transmisión interceptada desde el pabellón de contención.",
-        text: "Pasaron 7 años desde que los animales nos integramos a la sociedad. Hoy trabajamos como policías, bomberos y profesionales... pero alguien quiere arrebatarnos la libertad. Me dejé atrapar a propósito por la policía para contártelo: en nuestro último atraco al viejo veterinario Patricio, descubrimos su laboratorio secreto. Está fabricando la 'Vacuna Inerte' para volvernos sumisos. Mis amigos están encerrados ahí abajo. Seguí exactamente mis pistas para rescatarlos."
+        text: "Pasaron 7 años desde que los animales nos integramos a la sociedad. Hoy trabajamos como policías, bomberos y profesionales... pero alguien quiere arrebatarnos la libertad. Me dejé atrapar a propósito por la policía para contártelo: en nuestro último atraco al viejo veterinario Patricio, descubrimos su laboratorio secreto. Está fabricando la 'Vacuna Inerte' para volvernos sumisos. Mis amigos están encerrados ahí abajo. Seguí exactamente mis pistas para rescatarlos.",
+        targetGameStep: null // Inicia el juego en el Paso 1 al terminar
       },
       {
         id: 1,
@@ -501,7 +473,8 @@
         avatar: "img/amelie.jpg",
         icon: "🦊",
         subtitle: "Búsqueda de accesos en la superficie.",
-        text: "Te infiltraste con éxito en el consultorio abandonado de Patricio. Para descender al laboratorio subterráneo, necesitás abrir su maletín personal. Una nota adhesiva pegada al costado indica que sus pacientes animales más antiguos guardan la clave secreta de 4 dígitos en estricto orden cronológico. ¡Revisá los expedientes rápidamente!"
+        text: "Te infiltraste con éxito en el consultorio abandonado de Patricio. Para descender al laboratorio subterráneo, necesitás abrir su maletín personal. Una nota adhesiva pegada al costado indica que sus pacientes animales más antiguos guardan la clave secreta de 4 dígitos en estricto orden cronológico. ¡Revisá los expedientes rápidamente!",
+        targetGameStep: 1 // Abre el Desafío 1
       },
       {
         id: 2,
@@ -511,7 +484,8 @@
         avatar: "img/patricio.jpg",
         icon: "👨‍⚕️",
         subtitle: "Registro informático en la consola central.",
-        text: "¡Maletín abierto! Al girar la manivela, una compuerta secreta en el piso revela el laboratorio clandestino. Huele a químicos y jaulas frías. Frente a vos hay una terminal con gráficos sobre la caída de natalidad humana y el auge de mascotas. Para desactivar el bloqueo de las celdas, el sistema de seguridad te exige validar los datos sociológicos del caso."
+        text: "¡Maletín abierto! Al girar la manivela, una compuerta secreta en el piso revela el laboratorio clandestino. Huele a químicos y jaulas frías. Frente a vos hay una terminal con gráficos sobre la caída de natalidad humana y el auge de mascotas. Para desactivar el bloqueo de las celdas, el sistema de seguridad te exige validar los datos sociológicos del caso.",
+        targetGameStep: 2 // Abre el Desafío 2
       },
       {
         id: 3,
@@ -521,7 +495,8 @@
         avatar: "img/mecha.jpg",
         icon: "⚡",
         subtitle: "Transmisión de audio con interferencia.",
-        text: "¡Terminal desbloqueada! Las celdas empiezan a destrabarse, pero las alarmas secundarias se encendieron. El sistema automático de la veterinaria sella las salidas. ¡Rápido! Hackeá la secuencia de botones del conducto de ventilación para limpiar el humo de contención antes de que llegue la patrulla canina."
+        text: "¡Terminal desbloqueada! Las celdas empiezan a destrabarse, pero las alarmas secundarias se encendieron. El sistema automático de la veterinaria sella las salidas. ¡Rápido! Hackeá la secuencia de botones del conducto de ventilación para limpiar el humo de contención antes de que llegue la patrulla canina.",
+        targetGameStep: 3 // Abre el Desafío 3
       },
       {
         id: 4,
@@ -531,19 +506,15 @@
         avatar: "img/amelie.jpg",
         icon: "🧪",
         subtitle: "Neutralización del reactivo químico.",
-        text: "Sortearon los conductos y están frente al tanque central de la 'Vacuna Inerte'. En la mesa hay frascos de reactivos y los cuadernos de notas de Patricio. Tenés que mezclar los tres compuestos químicos en el orden exacto para neutralizar la fórmula antes de que el veterinario regrese."
-      },
-      {
-        id: 5,
-        location: "FINAL - LA LIBERACIÓN DE LOS ANIMALES",
-        speaker: "Equipo Pecepece",
-        role: "Misión Cumplida",
-        avatar: "img/mecha.jpg",
-        icon: "🏆",
-        subtitle: "La revuelta de las mascotas ha triunfado.",
-        text: "¡Lo lograste! El tanque emite una luz verde brillante y la fórmula de la Vacuna Inerte se neutraliza por completo. Las jaulas se abren de golpe y todos los animales prisioneros escapan junto con Mecha por la claraboya hacia la ciudad. ¡La libertad está a salvo gracias a tu astucia!"
+        text: "Sortearon los conductos y están frente al tanque central de la 'Vacuna Inerte'. En la mesa hay frascos de reactivos y los cuadernos de notas de Patricio. Tenés que mezclar los tres compuestos químicos en el orden exacto para neutralizar la fórmula antes de que el veterinario regrese.",
+        targetGameStep: 4 // Abre el Desafío 4
       }
     ];
+
+    let currentCinematicIndex = 0;
+    let isTyping = false;
+    let typeWriterTimer = null;
+    let audioEnabled = true;
 
     let currentStep = 0;
     let timerSeconds = 0;
@@ -558,80 +529,37 @@
     const step4CorrectSequence = ['Neuro-K', 'Sero-A', 'Enzima-Z'];
 
     const hintsData = {
-      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185.",
-      2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar.",
+      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185[cite: 2].",
+      2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar[cite: 10, 13].",
       3: "La secuencia de herramientas es: Rojo (Linterna) ➔ Verde (Ganzúa) ➔ Azul (Llave) ➔ Rojo (Linterna).",
       4: "Seguí las instrucciones científicas: 1° Neuro-K (Inhibidor), 2° Sero-A (Estabilizador) y 3° Enzima-Z (Catalizador)."
     };
 
     window.onload = function() {
       lucide.createIcons();
-      renderScene(0);
+      renderCinematic(0);
       updateProgressBar();
       startTimer();
 
       document.addEventListener('keydown', function(event) {
-        if (currentAppView === 'cinematic') {
+        const cineContainer = document.getElementById('cinematic-container');
+        if (!cineContainer.classList.contains('hidden')) {
           if (event.code === 'Space' || event.code === 'ArrowRight') {
             event.preventDefault();
-            nextDialogue();
-          } else if (event.code === 'ArrowLeft') {
-            event.preventDefault();
-            prevDialogue();
+            advanceCinematic();
           }
         }
       });
     };
 
-    function switchAppView(view) {
-      currentAppView = view;
-      const btnCine = document.getElementById('nav-btn-cinematic');
-      const btnGame = document.getElementById('nav-btn-game');
-      const viewCine = document.getElementById('app-view-cinematic');
-      const viewGame = document.getElementById('app-view-game');
-      const hud = document.getElementById('escape-hud');
-
-      if (view === 'cinematic') {
-        btnCine.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition bg-emerald-500 text-slate-950 shadow";
-        btnGame.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition text-slate-400 hover:text-white";
-        viewCine.classList.remove('hidden');
-        viewGame.classList.add('hidden');
-        hud.classList.add('hidden');
-      } else {
-        btnGame.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition bg-emerald-500 text-slate-950 shadow";
-        btnCine.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold font-orbitron transition text-slate-400 hover:text-white";
-        viewGame.classList.remove('hidden');
-        viewCine.classList.add('hidden');
-        hud.classList.remove('hidden');
-      }
-    }
-
-    let audioCtx = null;
-    function playBeep(freq = 440, type = 'sine', duration = 0.05, vol = 0.03) {
-      if (!audioEnabled) return;
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {}
-    }
-
-    function renderScene(index) {
-      const scene = storyScenes[index];
+    // --- FLUJO CINEMÁTICA ➔ JUEGO ---
+    function renderCinematic(index) {
+      const scene = storyCinematics[index];
       document.getElementById('scene-location').innerHTML = `
         <span class="w-2.5 h-2.5 rounded-full bg-lab-gold animate-ping"></span>
         ${scene.location}
       `;
-      document.getElementById('scene-step-counter').innerText = `ESCENA ${index + 1} / ${storyScenes.length}`;
+      document.getElementById('scene-step-counter').innerText = `FASE ${index + 1} / ${storyCinematics.length}`;
       document.getElementById('speaker-name').innerText = scene.speaker;
       document.getElementById('speaker-role').innerText = scene.role;
       document.getElementById('scene-subtitle').innerText = `"${scene.subtitle}"`;
@@ -641,12 +569,11 @@
       avatarImg.src = scene.avatar;
       document.getElementById('character-badge').innerText = scene.speaker.split(' ')[0].toUpperCase();
 
-      document.getElementById('btn-prev').disabled = (index === 0);
-      const btnNext = document.getElementById('btn-next');
-      if (index === storyScenes.length - 1) {
-        btnNext.innerHTML = `<span>IR A JUGAR</span> <span class="text-xl">🎮</span>`;
+      const btnText = document.getElementById('btn-cinematic-text');
+      if (scene.targetGameStep === null) {
+        btnText.innerText = "COMENZAR INFILTRACIÓN";
       } else {
-        btnNext.innerHTML = `<span>CONTINUAR</span> <span class="text-xl">➔</span>`;
+        btnText.innerText = "¡IR A RESOLVER EL DESAFÍO!";
       }
 
       startTypewriter(scene.text);
@@ -676,28 +603,57 @@
       }, 25);
     }
 
-    function nextDialogue() {
+    function advanceCinematic() {
       if (isTyping) {
         clearInterval(typeWriterTimer);
-        document.getElementById('dialogue-text').innerText = storyScenes[currentSceneIndex].text;
+        document.getElementById('dialogue-text').innerText = storyCinematics[currentCinematicIndex].text;
         document.getElementById('typing-indicator').style.opacity = "1";
         isTyping = false;
         return;
       }
 
-      if (currentSceneIndex < storyScenes.length - 1) {
-        currentSceneIndex++;
-        renderScene(currentSceneIndex);
+      const scene = storyCinematics[currentCinematicIndex];
+      
+      if (scene.targetGameStep === null) {
+        // Pasar a la primera cinemática con juego (Paso 1)
+        currentCinematicIndex = 1;
+        renderCinematic(1);
       } else {
-        switchAppView('game');
+        // Ocultar cinemática y abrir el juego correspondiente
+        document.getElementById('cinematic-container').classList.add('hidden');
+        document.getElementById('game-container').classList.remove('hidden');
+        nextStep(scene.targetGameStep);
       }
     }
 
-    function prevDialogue() {
-      if (currentSceneIndex > 0) {
-        currentSceneIndex--;
-        renderScene(currentSceneIndex);
+    function triggerCinematicForStep(stepNum) {
+      // Buscar la cinemática correspondiente al paso del juego
+      const targetIndex = storyCinematics.findIndex(s => s.targetGameStep === stepNum);
+      if (targetIndex !== -1) {
+        currentCinematicIndex = targetIndex;
+        renderCinematic(targetIndex);
+        document.getElementById('game-container').classList.add('hidden');
+        document.getElementById('cinematic-container').classList.remove('hidden');
       }
+    }
+
+    // --- AUDIO & TIMER ---
+    let audioCtx = null;
+    function playBeep(freq = 440, type = 'sine', duration = 0.05, vol = 0.03) {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
     }
 
     function startTimer() {
@@ -716,9 +672,10 @@
     }
 
     function nextStep(targetStep) {
-      document.getElementById(`step-${currentStep}`).classList.add('hidden');
+      document.querySelectorAll('#game-container > section').forEach(s => s.classList.add('hidden'));
       currentStep = targetStep;
-      document.getElementById(`step-${currentStep}`).classList.remove('hidden');
+      const activeSec = document.getElementById(`step-${currentStep}`);
+      if (activeSec) activeSec.classList.remove('hidden');
       updateProgressBar();
 
       if (currentStep === 5) {
@@ -744,8 +701,10 @@
       const hintsDisplay = document.getElementById('hints-count-display');
       if (hintsDisplay) hintsDisplay.innerText = '0';
       currentStep = 0;
-      document.querySelectorAll('#app-view-game section').forEach(s => s.classList.add('hidden'));
-      document.getElementById('step-1').classList.remove('hidden');
+      currentCinematicIndex = 0;
+      renderCinematic(0);
+      document.getElementById('game-container').classList.add('hidden');
+      document.getElementById('cinematic-container').classList.remove('hidden');
       updateProgressBar();
       startTimer();
     }
@@ -763,6 +722,7 @@
       document.getElementById('hint-modal').classList.add('hidden');
     }
 
+    // --- LÓGICA DE JUEGO (PASOS 1 A 4) ---
     function selectPatientCard(name, date, stamp, element) {
       playBeep(350, 'triangle', 0.1, 0.03);
       const exists = step1SelectedCards.some(c => c.name === name);
@@ -804,7 +764,8 @@
       const isCorrect = userStamps.every((val, index) => val === correctStamps[index]);
       if (isCorrect) {
         showFeedback(1, '✅ ¡Código 4185 correcto! Maletín desbloqueado.', 'success');
-        setTimeout(() => nextStep(2), 1200);
+        // Al completar el Paso 1, lanza la cinemática del Paso 2 antes de ir al siguiente juego
+        setTimeout(() => triggerCinematicForStep(2), 1200);
       } else {
         showFeedback(1, '❌ Secuencia cronológica incorrecta. Reiniciá el orden.', 'danger');
       }
@@ -822,7 +783,8 @@
       }
       if (step2SelectedValue === 'b') {
         showFeedback(2, '✅ ¡Premisa validada! Celdas de retención abiertas.', 'success');
-        setTimeout(() => nextStep(3), 1200);
+        // Al completar el Paso 2, lanza la cinemática del Paso 3
+        setTimeout(() => triggerCinematicForStep(3), 1200);
       } else {
         showFeedback(2, '❌ Respuesta incorrecta. La consola rechazó el intento.', 'danger');
       }
@@ -871,7 +833,8 @@
 
       if (simonPlayerInput.length === simonSequence.length) {
         showFeedback(3, '✅ ¡Ductos desatascados! Sistema de ventilación desactivado.', 'success');
-        setTimeout(() => nextStep(4), 1200);
+        // Al completar el Paso 3, lanza la cinemática del Paso 4
+        setTimeout(() => triggerCinematicForStep(4), 1200);
       }
     }
 
