@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Historia 3: La Vacuna Inerte | Escape Room Digital - Equipo Pecepece</title>
-  
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&family=VT323&family=Share+Tech+Mono&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
-  
+
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -51,20 +51,61 @@
   </script>
 
   <style>
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #0d0f12; }
-    ::-webkit-scrollbar-thumb { background: #2a2f3d; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #10b981; }
-    
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0d0f12;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #2a2f3d;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+
     .scanlines {
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+      );
       background-size: 100% 4px;
     }
-    .border-glow { box-shadow: 0 0 15px rgba(217, 107, 157, 0.3), inset 0 0 10px rgba(94, 46, 70, 0.5); }
-    .border-glow-gold { box-shadow: 0 0 15px rgba(255, 209, 102, 0.3), inset 0 0 10px rgba(255, 209, 102, 0.2); }
-    .glow-neon { box-shadow: 0 0 20px rgba(16, 185, 129, 0.25); }
+
+    .border-glow {
+      box-shadow:
+        0 0 15px rgba(217, 107, 157, 0.3),
+        inset 0 0 10px rgba(94, 46, 70, 0.5);
+    }
+
+    .border-glow-gold {
+      box-shadow:
+        0 0 15px rgba(255, 209, 102, 0.3),
+        inset 0 0 10px rgba(255, 209, 102, 0.2);
+    }
+
+    .glow-neon {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+    }
+
+    /*
+      CORRECCIÓN DE LOS DIÁLOGOS:
+      Conserva los espacios entre palabras y los saltos de línea.
+    */
+    #dialogue-text {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: normal;
+      letter-spacing: normal;
+      word-spacing: normal;
+    }
   </style>
 </head>
+
 <body class="bg-lab-bg text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-black relative overflow-x-hidden">
 
   <!-- Capa de escaneo CRT retro para cinemáticas -->
@@ -73,18 +114,24 @@
   <!-- TOP NAVIGATION / HEADER -->
   <header class="bg-lab-card/90 border-b border-lab-border sticky top-0 z-40 backdrop-blur-md">
     <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      
+
       <!-- Title & Team -->
       <div class="flex items-center gap-3">
         <div class="p-2.5 bg-emerald-950/60 border border-emerald-500/40 rounded-xl text-emerald-400 shadow-inner">
           <i data-lucide="biohazard" class="w-6 h-6 animate-pulse"></i>
         </div>
+
         <div>
           <h1 class="font-orbitron font-bold text-base sm:text-lg text-slate-100 tracking-wide uppercase flex items-center gap-2">
             <span>La Vacuna Inerte</span>
-            <span class="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30 font-normal">HISTORIA 3</span>
+            <span class="text-xs font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-500/30 font-normal">
+              HISTORIA 3
+            </span>
           </h1>
-          <p class="text-xs text-slate-400 font-mono">Equipo Pecepece • Escape Room Cinemático</p>
+
+          <p class="text-xs text-slate-400 font-mono">
+            Equipo Pecepece • Escape Room Cinemático
+          </p>
         </div>
       </div>
 
@@ -94,6 +141,7 @@
           <i data-lucide="timer" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span id="timer-display" class="text-emerald-400 font-bold">00:00</span>
         </div>
+
         <div class="bg-slate-950 border border-lab-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5" title="Pistas Utilizadas">
           <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-400"></i>
           <span id="hints-count-display" class="text-amber-400 font-bold">0</span>
@@ -110,30 +158,35 @@
   <!-- MAIN CONTAINER -->
   <main class="max-w-4xl mx-auto w-full px-4 py-8 flex-grow flex flex-col justify-center relative z-10">
 
-    <!-- ========================================================================== -->
-    <!-- MÓDULO DE CINEMÁTICAS RPG (SE MUESTRA ANTES DE CADA JUEGO) -->
-    <!-- ========================================================================== -->
+    <!-- MÓDULO DE CINEMÁTICAS RPG -->
     <div id="cinematic-container" class="w-full flex flex-col items-center justify-center space-y-4">
+
       <div class="w-full bg-borravino-dark/90 border-2 border-borravino-light/60 rounded-2xl overflow-hidden border-glow relative shadow-2xl flex flex-col">
-        
+
         <!-- Header de Escenario -->
         <div class="bg-borravino-darker/90 px-4 py-3 border-b border-borravino-light/30 flex justify-between items-center font-mono text-xs text-borravino-accent">
           <span id="scene-location" class="uppercase tracking-wider flex items-center gap-2 text-lab-gold font-bold">
             <span class="w-2.5 h-2.5 rounded-full bg-lab-gold animate-ping"></span>
             PRÓLOGO - CÁRCEL CANINA
           </span>
+
           <span id="scene-step-counter" class="text-slate-300">FASE 1 / 5</span>
         </div>
 
         <!-- Escenario Visual & Personaje -->
         <div class="relative min-h-[240px] md:min-h-[300px] p-6 flex flex-col md:flex-row items-center justify-around gap-6 bg-gradient-to-b from-transparent to-borravino-darker/80">
+
           <div class="relative group">
             <div class="absolute -inset-1 rounded-full bg-gradient-to-r from-borravino-accent to-lab-gold opacity-50 blur"></div>
-            <img id="character-avatar" 
-                 src="img/mecha.jpg" 
-                 alt="Personaje"
-                 onerror="this.src='https://placehold.co/200x200/5e2e46/ffd166?text=PERSONAJE'"
-                 class="relative w-32 h-32 md:w-44 md:h-44 rounded-full border-4 border-lab-gold object-cover shadow-2xl">
+
+            <img
+              id="character-avatar"
+              src="img/mecha.jpg"
+              alt="Personaje"
+              onerror="this.onerror=null; this.src='https://placehold.co/200x200/5e2e46/ffd166?text=PERSONAJE'"
+              class="relative w-32 h-32 md:w-44 md:h-44 rounded-full border-4 border-lab-gold object-cover shadow-2xl"
+            >
+
             <div id="character-badge" class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-borravino-darker border border-lab-gold text-lab-gold font-pixel text-xl px-3 py-0.5 rounded-full shadow whitespace-nowrap">
               MECHA
             </div>
@@ -143,6 +196,7 @@
             <div id="scene-badge-icon" class="text-borravino-light font-pixel text-7xl select-none">
               🦝
             </div>
+
             <p id="scene-subtitle" class="font-mono text-xs text-borravino-accent max-w-xs mt-1">
               "Transmisión interceptada..."
             </p>
@@ -151,17 +205,26 @@
 
         <!-- Caja de Diálogo RPG -->
         <div class="bg-borravino-darker border-t-2 border-borravino-light p-5 md:p-6 relative min-h-[160px] flex flex-col justify-between">
-          <div class="flex items-center gap-2 mb-2">
-            <span id="speaker-name" class="font-pixel text-2xl text-lab-gold tracking-wide">Mecha el Mapache</span>
-            <span id="speaker-role" class="font-mono text-[10px] bg-borravino/80 text-borravino-accent px-2 py-0.5 rounded uppercase border border-borravino-light/30">Infiltrado</span>
+
+          <div class="flex items-center gap-2 mb-2 flex-wrap">
+            <span id="speaker-name" class="font-pixel text-2xl text-lab-gold tracking-wide">
+              Mecha el Mapache
+            </span>
+
+            <span id="speaker-role" class="font-mono text-[10px] bg-borravino/80 text-borravino-accent px-2 py-0.5 rounded uppercase border border-borravino-light/30">
+              Infiltrado
+            </span>
           </div>
 
           <p id="dialogue-text" class="font-mono text-sm md:text-base text-slate-100 leading-relaxed min-h-[70px]">
             Cargando cinemática inicial...
           </p>
 
-          <div class="w-full flex justify-between items-center mt-3 pt-2 border-t border-borravino-light/20">
-            <span class="text-xs text-slate-400 font-mono">💡 Tip: Usá la barra espaciadora o el botón para avanzar.</span>
+          <div class="w-full flex justify-between items-center mt-3 pt-2 border-t border-borravino-light/20 gap-2 flex-wrap">
+            <span class="text-xs text-slate-400 font-mono">
+              💡 Tip: Usá la barra espaciadora o el botón para avanzar.
+            </span>
+
             <span id="typing-indicator" class="font-mono text-xs text-lab-gold animate-pulse flex items-center gap-1">
               HAZ CLIC EN CONTINUAR ➔
             </span>
@@ -171,27 +234,30 @@
 
       <!-- Botón de Acción de la Cinemática -->
       <div class="w-full flex justify-end">
-        <button onclick="advanceCinematic()" id="btn-cinematic-action" class="w-full sm:w-auto bg-gradient-to-r from-borravino to-borravino-light hover:from-borravino-light hover:to-borravino-accent border border-lab-gold text-lab-gold font-pixel text-2xl py-3 px-10 rounded-xl transition flex items-center justify-center gap-3 border-glow-gold hover:scale-105 transform active:scale-95">
+        <button
+          onclick="advanceCinematic()"
+          id="btn-cinematic-action"
+          class="w-full sm:w-auto bg-gradient-to-r from-borravino to-borravino-light hover:from-borravino-light hover:to-borravino-accent border border-lab-gold text-lab-gold font-pixel text-2xl py-3 px-10 rounded-xl transition flex items-center justify-center gap-3 border-glow-gold hover:scale-105 transform active:scale-95"
+        >
           <span id="btn-cinematic-text">CONTINUAR CINEMÁTICA</span>
           <span class="text-xl">➔</span>
         </button>
       </div>
     </div>
 
-
-    <!-- ========================================================================== -->
-    <!-- MÓDULO DE MINIJUEGOS DEL ESCAPE ROOM -->
-    <!-- ========================================================================== -->
+    <!-- MÓDULO DE MINIJUEGOS -->
     <div id="game-container" class="hidden space-y-6 w-full">
 
       <!-- PASO 1 / ZONA A: MALETÍN PATRICIO -->
       <section id="step-1" class="space-y-6">
         <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
+
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
             <div>
               <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Desafío 1 / Zona A</span>
               <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">El Maletín del Veterinario Patricio</h2>
             </div>
+
             <button onclick="showHint(1)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
               <i data-lucide="lightbulb" class="w-4 h-4"></i>
               <span>Pedir Pista</span>
@@ -199,29 +265,34 @@
           </div>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras[cite: 2]. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente)[cite: 2].
+            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente).
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-6">
             <div class="text-xs font-mono text-slate-400 mb-2">SECUENCIA DE SELLOS SELECCIONADA:</div>
+
             <div id="selected-sequence-display-1" class="flex items-center gap-2 font-mono text-2xl text-emerald-400 min-h-[40px] flex-wrap">
               <span class="text-slate-600 text-sm font-sans italic">Hacé clic en las fichas en orden cronológico...</span>
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6" id="patient-cards-grid">
+
             <button onclick="selectPatientCard('Boby', '14/08/2061', 8, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
               <span class="font-semibold text-slate-200 block mb-1">Paciente: Caniche "Boby" (Sello: 8)</span>
               <span class="text-xs text-slate-400 font-mono">Ingreso: 14/08/2061</span>
             </button>
+
             <button onclick="selectPatientCard('Simón', '02/01/2058', 4, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
               <span class="font-semibold text-slate-200 block mb-1">Paciente: Felino "Simón" (Sello: 4)</span>
               <span class="text-xs text-slate-400 font-mono">Ingreso: 02/01/2058</span>
             </button>
+
             <button onclick="selectPatientCard('Amélie', '30/11/2062', 5, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
               <span class="font-semibold text-slate-200 block mb-1">Paciente: Zorra "Amélie" (Sello: 5)</span>
               <span class="text-xs text-slate-400 font-mono">Ingreso: 30/11/2062</span>
             </button>
+
             <button onclick="selectPatientCard('Thor', '19/05/2059', 1, this)" class="patient-card text-left bg-slate-950/80 hover:bg-slate-900 border border-slate-800 p-4 rounded-xl transition cursor-pointer group">
               <span class="font-semibold text-slate-200 block mb-1">Paciente: Ovejero "Thor" (Sello: 1)</span>
               <span class="text-xs text-slate-400 font-mono">Ingreso: 19/05/2059</span>
@@ -235,6 +306,7 @@
               <i data-lucide="key-round" class="w-4 h-4"></i>
               <span>Forzar Maletín (4185)</span>
             </button>
+
             <button onclick="resetStep1()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3 rounded-xl transition">
               Reiniciar
             </button>
@@ -245,11 +317,13 @@
       <!-- PASO 2 / ZONA B: CONSOLA DEMOGRÁFICA -->
       <section id="step-2" class="hidden space-y-6">
         <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
+
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
             <div>
               <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Desafío 2 / Zona B</span>
               <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Consola de Seguridad Demográfica</h2>
             </div>
+
             <button onclick="showHint(2)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
               <i data-lucide="lightbulb" class="w-4 h-4"></i>
               <span>Pedir Pista</span>
@@ -257,12 +331,12 @@
           </div>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto[cite: 13].
+            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto.
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 space-y-4">
             <p class="text-slate-100 font-semibold text-base leading-snug">
-              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?[cite: 13]
+              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?
             </p>
 
             <div class="space-y-3 pt-2">
@@ -273,7 +347,7 @@
 
               <label onclick="selectOptionStep2('b')" class="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl cursor-pointer transition">
                 <input type="radio" name="step2-option" value="b" class="accent-emerald-500">
-                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar[cite: 10, 13].</span>
+                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar.</span>
               </label>
             </div>
           </div>
@@ -290,11 +364,13 @@
       <!-- PASO 3 / ZONA C: HACKEO DUCTOS -->
       <section id="step-3" class="hidden space-y-6">
         <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
+
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
             <div>
               <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Desafío 3 / Zona C</span>
               <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Hackeo del Sistema de Ventilación</h2>
             </div>
+
             <button onclick="showHint(3)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
               <i data-lucide="lightbulb" class="w-4 h-4"></i>
               <span>Pedir Pista</span>
@@ -306,11 +382,13 @@
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 max-w-md mx-auto mb-6 text-center">
+
             <div id="simon-status" class="text-xs sm:text-sm font-mono text-slate-300 mb-4 h-6 flex items-center justify-center">
               Presioná "Ver Secuencia" para iniciar...
             </div>
 
             <div class="grid grid-cols-2 gap-4 mb-6">
+
               <button id="simon-btn-0" onclick="simonUserInput(0)" class="h-28 rounded-2xl bg-red-950/60 border-2 border-red-500/50 text-red-400 flex flex-col items-center justify-center gap-1.5 transition active:scale-95">
                 <span class="text-3xl">🔦</span>
                 <span class="text-xs font-bold font-mono">Linterna (Rojo)</span>
@@ -344,11 +422,13 @@
       <!-- PASO 4 / ZONA D: ANTÍDOTO -->
       <section id="step-4" class="hidden space-y-6">
         <div class="bg-lab-card border border-lab-border rounded-2xl p-6 sm:p-8 shadow-2xl">
+
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-lab-border pb-4 mb-6">
             <div>
               <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Desafío 4 / Zona D</span>
               <h2 class="text-xl sm:text-2xl font-orbitron font-bold text-white">Sintetizador del Antídoto</h2>
             </div>
+
             <button onclick="showHint(4)" class="self-start sm:self-auto text-xs text-amber-400 hover:text-amber-300 flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/40 px-3.5 py-2 rounded-lg transition">
               <i data-lucide="lightbulb" class="w-4 h-4"></i>
               <span>Pedir Pista</span>
@@ -360,19 +440,25 @@
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 space-y-4">
-            <div class="text-xs font-mono text-slate-400">MEZCLA ACTUAL EN CÁMARA DE REACCIÓN:</div>
-            
+
+            <div class="text-xs font-mono text-slate-400">
+              MEZCLA ACTUAL EN CÁMARA DE REACCIÓN:
+            </div>
+
             <div id="chemical-sequence-display" class="flex items-center justify-center gap-3 p-4 bg-slate-900/90 rounded-xl min-h-[60px] font-mono text-sm text-emerald-400 border border-slate-800 flex-wrap">
               <span class="text-slate-600 font-sans italic text-xs sm:text-sm">Seleccioná los tubos en orden...</span>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+
               <button onclick="addChemical('Neuro-K')" class="bg-slate-900 hover:bg-slate-800 border border-cyan-500/40 text-cyan-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
                 <span>🧪 Neuro-K</span>
               </button>
+
               <button onclick="addChemical('Sero-A')" class="bg-slate-900 hover:bg-slate-800 border border-emerald-500/40 text-emerald-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
                 <span>🧬 Sero-A</span>
               </button>
+
               <button onclick="addChemical('Enzima-Z')" class="bg-slate-900 hover:bg-slate-800 border border-purple-500/40 text-purple-300 p-4 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition active:scale-95">
                 <span>🧫 Enzima-Z</span>
               </button>
@@ -386,6 +472,7 @@
               <i data-lucide="flask-conical" class="w-4 h-4"></i>
               <span>Sintetizar y Neutralizar</span>
             </button>
+
             <button onclick="resetStep4()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-5 py-3.5 rounded-xl transition">
               Limpiar Mezcla
             </button>
@@ -396,22 +483,30 @@
       <!-- PASO 5: PANTALLA FINAL -->
       <section id="step-5" class="hidden space-y-6">
         <div class="bg-lab-card border-2 border-emerald-500 rounded-2xl p-8 sm:p-10 shadow-2xl text-center relative overflow-hidden glow-neon">
+
           <div class="w-20 h-20 bg-emerald-950/80 border-2 border-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-300 shadow-lg">
             <i data-lucide="trophy" class="w-10 h-10"></i>
           </div>
 
-          <span class="text-xs font-mono text-emerald-400 tracking-widest uppercase bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-500/30">MISIÓN CUMPLIDA</span>
-          <h2 class="text-3xl sm:text-4xl font-orbitron font-extrabold text-white mt-3 mb-4">¡Laboratorio Neutralizado!</h2>
+          <span class="text-xs font-mono text-emerald-400 tracking-widest uppercase bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-500/30">
+            MISIÓN CUMPLIDA
+          </span>
+
+          <h2 class="text-3xl sm:text-4xl font-orbitron font-extrabold text-white mt-3 mb-4">
+            ¡Laboratorio Neutralizado!
+          </h2>
 
           <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-6">
             Lograste liberar a <strong>Amélie</strong>, desactivar los servidores del Dr. Patricio y neutralizar la amenaza de la <strong>Vacuna Inerte</strong>.
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 max-w-md mx-auto grid grid-cols-2 gap-4 mb-8">
+
             <div class="text-center">
               <div class="text-xs text-slate-400 font-mono">TIEMPO FINAL</div>
               <div id="final-time-display" class="text-2xl font-bold text-emerald-400 font-mono mt-1">00:00</div>
             </div>
+
             <div class="text-center">
               <div class="text-xs text-slate-400 font-mono">PISTAS USADAS</div>
               <div id="final-hints-display" class="text-2xl font-bold text-amber-400 font-mono mt-1">0</div>
@@ -426,17 +521,19 @@
       </section>
 
     </div>
-
   </main>
 
   <!-- HINT MODAL -->
   <div id="hint-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-lab-card border border-amber-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl relative">
+
       <div class="flex items-center gap-2 text-amber-400 font-bold mb-3">
         <i data-lucide="lightbulb" class="w-5 h-5"></i>
         <span class="font-orbitron text-sm">Pista del Sistema</span>
       </div>
+
       <p id="hint-text-display" class="text-slate-300 text-sm mb-6 leading-relaxed"></p>
+
       <div class="flex justify-end">
         <button onclick="closeHintModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm transition font-orbitron">
           Entendido
@@ -447,10 +544,10 @@
 
   <!-- FOOTER -->
   <footer class="bg-lab-card/80 border-t border-lab-border py-4 text-center text-xs text-slate-500">
-    <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece[cite: 6]</p>
+    <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece</p>
   </footer>
 
-  <!-- SCRIPT INTEGRADO: CINEMÁTICA CON ESPACIOS CORREGIDOS -->
+  <!-- SCRIPT PRINCIPAL -->
   <script>
     const storyCinematics = [
       {
@@ -483,7 +580,7 @@
         avatar: "img/patricio.jpg",
         icon: "👨‍⚕️",
         subtitle: "Registro informático en la consola central.",
-        text: "¡Maletín abierto! Al girar la manivela, una compuerta secreta en el piso revela el laboratorio clandestino[cite: 2]. Huele a químicos y jaulas frías. Frente a vos hay una terminal con gráficos sobre la caída de natalidad humana y el auge de mascotas[cite: 13]. Para desactivar el bloqueo de las celdas, el sistema de seguridad te exige validar los datos sociológicos del caso.",
+        text: "¡Maletín abierto! Al girar la manivela, una compuerta secreta en el piso revela el laboratorio clandestino. Huele a químicos y jaulas frías. Frente a vos hay una terminal con gráficos sobre la caída de natalidad humana y el auge de mascotas. Para desactivar el bloqueo de las celdas, el sistema de seguridad te exige validar los datos sociológicos del caso.",
         targetGameStep: 2
       },
       {
@@ -513,35 +610,48 @@
     let currentCinematicIndex = 0;
     let isTyping = false;
     let typeWriterTimer = null;
-    let audioEnabled = true;
 
     let currentStep = 0;
     let timerSeconds = 0;
     let timerInterval = null;
     let hintsUsedCount = 0;
+
     let step1SelectedCards = [];
     let step2SelectedValue = null;
+
     let simonSequence = [0, 1, 2, 0];
     let simonPlayerInput = [];
     let isSimonPlaying = false;
+
     let step4SelectedChemicals = [];
-    const step4CorrectSequence = ['Neuro-K', 'Sero-A', 'Enzima-Z'];
+
+    const step4CorrectSequence = [
+      'Neuro-K',
+      'Sero-A',
+      'Enzima-Z'
+    ];
 
     const hintsData = {
-      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185[cite: 2].",
-      2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar[cite: 10, 13].",
+      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185.",
+      2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar.",
       3: "La secuencia de herramientas es: Rojo (Linterna) ➔ Verde (Ganzúa) ➔ Azul (Llave) ➔ Rojo (Linterna).",
       4: "Seguí las instrucciones científicas: 1° Neuro-K (Inhibidor), 2° Sero-A (Estabilizador) y 3° Enzima-Z (Catalizador)."
     };
 
+    // ==========================================
+    // INICIALIZACIÓN
+    // ==========================================
+
     window.onload = function() {
       lucide.createIcons();
+
       renderCinematic(0);
       updateProgressBar();
       startTimer();
 
       document.addEventListener('keydown', function(event) {
         const cineContainer = document.getElementById('cinematic-container');
+
         if (!cineContainer.classList.contains('hidden')) {
           if (event.code === 'Space' || event.code === 'ArrowRight') {
             event.preventDefault();
@@ -551,132 +661,266 @@
       });
     };
 
+    // ==========================================
+    // CINEMÁTICAS
+    // ==========================================
+
     function renderCinematic(index) {
       const scene = storyCinematics[index];
+
       document.getElementById('scene-location').innerHTML = `
         <span class="w-2.5 h-2.5 rounded-full bg-lab-gold animate-ping"></span>
         ${scene.location}
       `;
-      document.getElementById('scene-step-counter').innerText = `FASE ${index + 1} / ${storyCinematics.length}`;
-      document.getElementById('speaker-name').innerText = scene.speaker;
-      document.getElementById('speaker-role').innerText = scene.role;
-      document.getElementById('scene-subtitle').innerText = `"${scene.subtitle}"`;
-      document.getElementById('scene-badge-icon').innerText = scene.icon;
+
+      document.getElementById('scene-step-counter').innerText =
+        `FASE ${index + 1} / ${storyCinematics.length}`;
+
+      document.getElementById('speaker-name').textContent = scene.speaker;
+      document.getElementById('speaker-role').textContent = scene.role;
+
+      document.getElementById('scene-subtitle').textContent =
+        `"${scene.subtitle}"`;
+
+      document.getElementById('scene-badge-icon').textContent = scene.icon;
 
       const avatarImg = document.getElementById('character-avatar');
+
+      // Evita bucles si una imagen no existe.
+      avatarImg.onerror = function() {
+        this.onerror = null;
+        this.src = 'https://placehold.co/200x200/5e2e46/ffd166?text=PERSONAJE';
+      };
+
       avatarImg.src = scene.avatar;
-      document.getElementById('character-badge').innerText = scene.speaker.split(' ')[0].toUpperCase();
+
+      document.getElementById('character-badge').textContent =
+        scene.speaker.split(' ')[0].toUpperCase();
 
       const btnText = document.getElementById('btn-cinematic-text');
+
       if (scene.targetGameStep === null) {
-        btnText.innerText = "COMENZAR INFILTRACIÓN";
+        btnText.textContent = "COMENZAR INFILTRACIÓN";
       } else {
-        btnText.innerText = "¡IR A RESOLVER EL DESAFÍO!";
+        btnText.textContent = "¡IR A RESOLVER EL DESAFÍO!";
       }
 
       startTypewriter(scene.text);
     }
 
+    /*
+      FUNCIÓN CORREGIDA:
+      Escribe el diálogo carácter por carácter sin eliminar
+      los espacios entre palabras.
+    */
     function startTypewriter(fullText) {
       const dialogueElement = document.getElementById('dialogue-text');
       const indicator = document.getElementById('typing-indicator');
-      
+
+      // Detener cualquier escritura anterior.
       clearInterval(typeWriterTimer);
-      dialogueElement.innerText = "";
+      typeWriterTimer = null;
+
+      // Reiniciar el diálogo.
+      dialogueElement.textContent = "";
+
       isTyping = true;
       indicator.style.opacity = "0.3";
 
       let charIndex = 0;
+
       typeWriterTimer = setInterval(() => {
         if (charIndex < fullText.length) {
-          dialogueElement.innerText += fullText.charAt(charIndex);
-          if (charIndex % 3 === 0) playBeep(300 + Math.random() * 80, 'sine', 0.03, 0.01);
+
+          /*
+            textContent conserva los espacios originales.
+            No se utiliza innerHTML, para evitar interpretar
+            caracteres del diálogo como etiquetas HTML.
+          */
+          dialogueElement.textContent += fullText.charAt(charIndex);
+
+          if (charIndex % 3 === 0) {
+            playBeep(
+              300 + Math.random() * 80,
+              'sine',
+              0.03,
+              0.01
+            );
+          }
+
           charIndex++;
+
         } else {
           clearInterval(typeWriterTimer);
+          typeWriterTimer = null;
+
           isTyping = false;
           indicator.style.opacity = "1";
+
           playBeep(520, 'triangle', 0.08, 0.02);
         }
       }, 25);
     }
 
     function advanceCinematic() {
+
+      // Si el texto todavía se está escribiendo,
+      // mostrarlo completo al presionar el botón.
       if (isTyping) {
         clearInterval(typeWriterTimer);
-        document.getElementById('dialogue-text').innerText = storyCinematics[currentCinematicIndex].text;
+        typeWriterTimer = null;
+
+        document.getElementById('dialogue-text').textContent =
+          storyCinematics[currentCinematicIndex].text;
+
         document.getElementById('typing-indicator').style.opacity = "1";
+
         isTyping = false;
         return;
       }
 
       const scene = storyCinematics[currentCinematicIndex];
-      
+
       if (scene.targetGameStep === null) {
         currentCinematicIndex = 1;
         renderCinematic(1);
       } else {
         document.getElementById('cinematic-container').classList.add('hidden');
         document.getElementById('game-container').classList.remove('hidden');
+
         nextStep(scene.targetGameStep);
       }
     }
 
     function triggerCinematicForStep(stepNum) {
-      const targetIndex = storyCinematics.findIndex(s => s.targetGameStep === stepNum);
+      const targetIndex = storyCinematics.findIndex(
+        scene => scene.targetGameStep === stepNum
+      );
+
       if (targetIndex !== -1) {
         currentCinematicIndex = targetIndex;
+
         renderCinematic(targetIndex);
+
         document.getElementById('game-container').classList.add('hidden');
         document.getElementById('cinematic-container').classList.remove('hidden');
       }
     }
 
+    // ==========================================
+    // AUDIO
+    // ==========================================
+
     let audioCtx = null;
+
     function playBeep(freq = 440, type = 'sine', duration = 0.05, vol = 0.03) {
       try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
+        if (!audioCtx) {
+          audioCtx = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
+        }
+
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
+
         osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+        osc.frequency.setValueAtTime(
+          freq,
+          audioCtx.currentTime
+        );
+
+        gain.gain.setValueAtTime(
+          vol,
+          audioCtx.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+          0.0001,
+          audioCtx.currentTime + duration
+        );
+
         osc.connect(gain);
         gain.connect(audioCtx.destination);
+
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {}
+
+      } catch (e) {
+        // El juego sigue funcionando aunque el audio no esté disponible.
+      }
     }
 
+    // ==========================================
+    // CRONÓMETRO
+    // ==========================================
+
     function startTimer() {
-      if (timerInterval) clearInterval(timerInterval);
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+
       timerInterval = setInterval(() => {
         timerSeconds++;
-        const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
-        const secs = String(timerSeconds % 60).padStart(2, '0');
+
+        const mins = String(
+          Math.floor(timerSeconds / 60)
+        ).padStart(2, '0');
+
+        const secs = String(
+          timerSeconds % 60
+        ).padStart(2, '0');
+
         const display = document.getElementById('timer-display');
-        if (display) display.innerText = `${mins}:${secs}`;
+
+        if (display) {
+          display.textContent = `${mins}:${secs}`;
+        }
       }, 1000);
     }
 
     function stopTimer() {
-      if (timerInterval) clearInterval(timerInterval);
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
     }
 
+    // ==========================================
+    // PROGRESO DEL JUEGO
+    // ==========================================
+
     function nextStep(targetStep) {
-      document.querySelectorAll('#game-container > section').forEach(s => s.classList.add('hidden'));
+      document.querySelectorAll('#game-container > section').forEach(section => {
+        section.classList.add('hidden');
+      });
+
       currentStep = targetStep;
+
       const activeSec = document.getElementById(`step-${currentStep}`);
-      if (activeSec) activeSec.classList.remove('hidden');
+
+      if (activeSec) {
+        activeSec.classList.remove('hidden');
+      }
+
       updateProgressBar();
 
       if (currentStep === 5) {
         stopTimer();
-        document.getElementById('final-time-display').innerText = document.getElementById('timer-display').innerText;
-        document.getElementById('final-hints-display').innerText = hintsUsedCount;
+
+        document.getElementById('final-time-display').textContent =
+          document.getElementById('timer-display').textContent;
+
+        document.getElementById('final-hints-display').textContent =
+          hintsUsedCount;
+
         playBeep(800, 'sine', 0.5, 0.05);
+
       } else {
         playBeep(440, 'sine', 0.15, 0.03);
       }
@@ -685,30 +929,76 @@
     function updateProgressBar() {
       const percentage = (currentStep / 4) * 100;
       const bar = document.getElementById('progress-bar');
-      if (bar) bar.style.width = `${Math.min(percentage, 100)}%`;
+
+      if (bar) {
+        bar.style.width = `${Math.min(percentage, 100)}%`;
+      }
     }
 
     function restartGame() {
+      // Detener cualquier cinemática anterior.
+      clearInterval(typeWriterTimer);
+      typeWriterTimer = null;
+      isTyping = false;
+
       resetStep1();
       resetStep4();
+
+      // Reiniciar los demás minijuegos.
+      step2SelectedValue = null;
+      simonPlayerInput = [];
+      isSimonPlaying = false;
+
+      document.querySelectorAll('input[name="step2-option"]').forEach(input => {
+        input.checked = false;
+      });
+
+      hideFeedback(2);
+      hideFeedback(3);
+
       hintsUsedCount = 0;
+
       const hintsDisplay = document.getElementById('hints-count-display');
-      if (hintsDisplay) hintsDisplay.innerText = '0';
+
+      if (hintsDisplay) {
+        hintsDisplay.textContent = '0';
+      }
+
+      timerSeconds = 0;
+
+      document.getElementById('timer-display').textContent = '00:00';
+
       currentStep = 0;
       currentCinematicIndex = 0;
+
       renderCinematic(0);
+
       document.getElementById('game-container').classList.add('hidden');
       document.getElementById('cinematic-container').classList.remove('hidden');
+
+      closeHintModal();
       updateProgressBar();
       startTimer();
     }
 
+    // ==========================================
+    // SISTEMA DE PISTAS
+    // ==========================================
+
     function showHint(step) {
       hintsUsedCount++;
+
       const hintsDisplay = document.getElementById('hints-count-display');
-      if (hintsDisplay) hintsDisplay.innerText = hintsUsedCount;
-      document.getElementById('hint-text-display').innerText = hintsData[step];
+
+      if (hintsDisplay) {
+        hintsDisplay.textContent = hintsUsedCount;
+      }
+
+      document.getElementById('hint-text-display').textContent =
+        hintsData[step];
+
       document.getElementById('hint-modal').classList.remove('hidden');
+
       playBeep(300, 'sine', 0.15, 0.03);
     }
 
@@ -716,86 +1006,176 @@
       document.getElementById('hint-modal').classList.add('hidden');
     }
 
+    // ==========================================
+    // PASO 1: MALETÍN DEL VETERINARIO
+    // ==========================================
+
     function selectPatientCard(name, date, stamp, element) {
       playBeep(350, 'triangle', 0.1, 0.03);
-      const exists = step1SelectedCards.some(c => c.name === name);
-      if (exists) return;
-      step1SelectedCards.push({ name, date, stamp });
-      element.classList.add('border-emerald-500', 'bg-emerald-950/40');
+
+      const exists = step1SelectedCards.some(card => card.name === name);
+
+      if (exists) {
+        return;
+      }
+
+      step1SelectedCards.push({
+        name,
+        date,
+        stamp
+      });
+
+      element.classList.add(
+        'border-emerald-500',
+        'bg-emerald-950/40'
+      );
+
       renderStep1Display();
     }
 
     function renderStep1Display() {
       const display = document.getElementById('selected-sequence-display-1');
+
       if (step1SelectedCards.length === 0) {
-        display.innerHTML = `<span class="text-slate-600 text-sm font-sans italic">Hacé clic en las fichas en orden cronológico...</span>`;
+        display.innerHTML = `
+          <span class="text-slate-600 text-sm font-sans italic">
+            Hacé clic en las fichas en orden cronológico...
+          </span>
+        `;
+
         return;
       }
-      display.innerHTML = step1SelectedCards.map(c => `
+
+      display.innerHTML = step1SelectedCards.map(card => `
         <span class="inline-flex items-center gap-1.5 bg-slate-900 border border-emerald-500/50 text-emerald-400 px-3 py-1 rounded-lg text-sm">
-          <strong>${c.stamp}</strong> <span class="text-xs text-slate-400">(${c.name})</span>
+          <strong>${card.stamp}</strong>
+          <span class="text-xs text-slate-400">(${card.name})</span>
         </span>
       `).join('');
     }
 
     function resetStep1() {
       step1SelectedCards = [];
+
       document.querySelectorAll('.patient-card').forEach(card => {
-        card.classList.remove('border-emerald-500', 'bg-emerald-950/40');
+        card.classList.remove(
+          'border-emerald-500',
+          'bg-emerald-950/40'
+        );
       });
+
       renderStep1Display();
       hideFeedback(1);
     }
 
     function verifyStep1() {
       const correctStamps = [4, 1, 8, 5];
-      const userStamps = step1SelectedCards.map(c => c.stamp);
+
+      const userStamps = step1SelectedCards.map(card => card.stamp);
+
       if (userStamps.length < 4) {
-        showFeedback(1, 'Seleccioná las 4 fichas de animales.', 'danger');
+        showFeedback(
+          1,
+          'Seleccioná las 4 fichas de animales.',
+          'danger'
+        );
+
         return;
       }
-      const isCorrect = userStamps.every((val, index) => val === correctStamps[index]);
+
+      const isCorrect = userStamps.every(
+        (value, index) => value === correctStamps[index]
+      );
+
       if (isCorrect) {
-        showFeedback(1, '✅ ¡Código 4185 correcto! Maletín desbloqueado.', 'success');
+        showFeedback(
+          1,
+          '✅ ¡Código 4185 correcto! Maletín desbloqueado.',
+          'success'
+        );
+
         setTimeout(() => triggerCinematicForStep(2), 1200);
+
       } else {
-        showFeedback(1, '❌ Secuencia cronológica incorrecta. Reiniciá el orden.', 'danger');
+        showFeedback(
+          1,
+          '❌ Secuencia cronológica incorrecta. Reiniciá el orden.',
+          'danger'
+        );
       }
     }
 
+    // ==========================================
+    // PASO 2: CONSOLA DEMOGRÁFICA
+    // ==========================================
+
     function selectOptionStep2(val) {
       step2SelectedValue = val;
+
       playBeep(300, 'sine', 0.1, 0.03);
     }
 
     function verifyStep2() {
       if (!step2SelectedValue) {
-        showFeedback(2, 'Seleccioná una opción para continuar.', 'danger');
+        showFeedback(
+          2,
+          'Seleccioná una opción para continuar.',
+          'danger'
+        );
+
         return;
       }
+
       if (step2SelectedValue === 'b') {
-        showFeedback(2, '✅ ¡Premisa validada! Celdas de retención abiertas.', 'success');
+        showFeedback(
+          2,
+          '✅ ¡Premisa validada! Celdas de retención abiertas.',
+          'success'
+        );
+
         setTimeout(() => triggerCinematicForStep(3), 1200);
+
       } else {
-        showFeedback(2, '❌ Respuesta incorrecta. La consola rechazó el intento.', 'danger');
+        showFeedback(
+          2,
+          '❌ Respuesta incorrecta. La consola rechazó el intento.',
+          'danger'
+        );
       }
     }
 
+    // ==========================================
+    // PASO 3: SECUENCIA DE HERRAMIENTAS
+    // ==========================================
+
     function playSimonSequence() {
-      if (isSimonPlaying) return;
+      if (isSimonPlaying) {
+        return;
+      }
+
       isSimonPlaying = true;
       simonPlayerInput = [];
-      document.getElementById('simon-status').innerText = 'Observá la secuencia del sistema...';
+
+      document.getElementById('simon-status').textContent =
+        'Observá la secuencia del sistema...';
+
+      hideFeedback(3);
 
       let idx = 0;
+
       const interval = setInterval(() => {
         flashSimonButton(simonSequence[idx]);
+
         idx++;
+
         if (idx >= simonSequence.length) {
           clearInterval(interval);
+
           setTimeout(() => {
             isSimonPlaying = false;
-            document.getElementById('simon-status').innerText = '¡Tu turno! Repetí la secuencia.';
+
+            document.getElementById('simon-status').textContent =
+              '¡Tu turno! Repetí la secuencia.';
           }, 600);
         }
       }, 700);
@@ -803,87 +1183,194 @@
 
     function flashSimonButton(index) {
       const btn = document.getElementById(`simon-btn-${index}`);
-      btn.classList.add('scale-105', 'brightness-150', 'ring-2', 'ring-cyan-400');
+
+      if (!btn) {
+        return;
+      }
+
+      btn.classList.add(
+        'scale-105',
+        'brightness-150',
+        'ring-2',
+        'ring-cyan-400'
+      );
+
       playBeep(250 + index * 100, 'sine', 0.2, 0.03);
+
       setTimeout(() => {
-        btn.classList.remove('scale-105', 'brightness-150', 'ring-2', 'ring-cyan-400');
+        btn.classList.remove(
+          'scale-105',
+          'brightness-150',
+          'ring-2',
+          'ring-cyan-400'
+        );
       }, 400);
     }
 
     function simonUserInput(index) {
-      if (isSimonPlaying) return;
+      if (isSimonPlaying) {
+        return;
+      }
+
       flashSimonButton(index);
+
       simonPlayerInput.push(index);
 
       const currentIdx = simonPlayerInput.length - 1;
+
       if (simonPlayerInput[currentIdx] !== simonSequence[currentIdx]) {
-        showFeedback(3, '❌ Secuencia equivocada. Reintentá el hackeo.', 'danger');
+        showFeedback(
+          3,
+          '❌ Secuencia equivocada. Reintentá el hackeo.',
+          'danger'
+        );
+
         simonPlayerInput = [];
+
         return;
       }
 
       if (simonPlayerInput.length === simonSequence.length) {
-        showFeedback(3, '✅ ¡Ductos desatascados! Sistema de ventilación desactivado.', 'success');
+        showFeedback(
+          3,
+          '✅ ¡Ductos desatascados! Sistema de ventilación desactivado.',
+          'success'
+        );
+
+        document.getElementById('simon-status').textContent =
+          '¡Secuencia correcta!';
+
         setTimeout(() => triggerCinematicForStep(4), 1200);
       }
     }
 
+    // ==========================================
+    // PASO 4: SINTETIZADOR DEL ANTÍDOTO
+    // ==========================================
+
     function addChemical(name) {
-      if (step4SelectedChemicals.length >= 3) return;
+      if (step4SelectedChemicals.length >= 3) {
+        return;
+      }
+
       playBeep(500, 'square', 0.1, 0.03);
+
       step4SelectedChemicals.push(name);
+
       renderStep4Display();
     }
 
     function renderStep4Display() {
       const display = document.getElementById('chemical-sequence-display');
+
       if (step4SelectedChemicals.length === 0) {
-        display.innerHTML = `<span class="text-slate-600 font-sans italic text-xs sm:text-sm">Seleccioná los tubos en orden...</span>`;
+        display.innerHTML = `
+          <span class="text-slate-600 font-sans italic text-xs sm:text-sm">
+            Seleccioná los tubos en orden...
+          </span>
+        `;
+
         return;
       }
-      display.innerHTML = step4SelectedChemicals.map(c => `
+
+      display.innerHTML = step4SelectedChemicals.map(chemical => `
         <span class="bg-slate-800 border border-emerald-500/40 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-mono">
-          ${c}
+          ${chemical}
         </span>
       `).join(' ➔ ');
     }
 
     function resetStep4() {
       step4SelectedChemicals = [];
+
       renderStep4Display();
       hideFeedback(4);
     }
 
     function verifyStep4() {
       if (step4SelectedChemicals.length < 3) {
-        showFeedback(4, 'Seleccioná los 3 componentes requeridos.', 'danger');
+        showFeedback(
+          4,
+          'Seleccioná los 3 componentes requeridos.',
+          'danger'
+        );
+
         return;
       }
-      const isCorrect = step4SelectedChemicals.every((val, index) => val === step4CorrectSequence[index]);
+
+      const isCorrect = step4SelectedChemicals.every(
+        (value, index) => value === step4CorrectSequence[index]
+      );
+
       if (isCorrect) {
-        showFeedback(4, '🎉 ¡Antídoto sintetizado! Inyectando la mezcla...', 'success');
+        showFeedback(
+          4,
+          '🎉 ¡Antídoto sintetizado! Inyectando la mezcla...',
+          'success'
+        );
+
         setTimeout(() => nextStep(5), 1500);
+
       } else {
-        showFeedback(4, '💥 Reacción inestable. Orden de componentes erróneo.', 'danger');
+        showFeedback(
+          4,
+          '💥 Reacción inestable. Orden de componentes erróneo.',
+          'danger'
+        );
       }
     }
 
-    function showFeedback(step, text, type) {
+    // ==========================================
+    // MENSAJES DE FEEDBACK
+    // ==========================================
+
+    function showFeedback(step, message, type) {
       const el = document.getElementById(`step-${step}-feedback`);
-      el.innerText = text;
-      el.classList.remove('hidden', 'bg-emerald-950/80', 'text-emerald-300', 'border-emerald-500/50', 'bg-red-950/80', 'text-red-300', 'border-red-500/50');
+
+      if (!el) {
+        return;
+      }
+
+      el.textContent = message;
+
+      el.classList.remove(
+        'hidden',
+        'bg-emerald-950/80',
+        'text-emerald-300',
+        'border-emerald-500/50',
+        'bg-red-950/80',
+        'text-red-300',
+        'border-red-500/50'
+      );
+
       if (type === 'success') {
-        el.classList.add('bg-emerald-950/80', 'text-emerald-300', 'border', 'border-emerald-500/50');
+        el.classList.add(
+          'bg-emerald-950/80',
+          'text-emerald-300',
+          'border',
+          'border-emerald-500/50'
+        );
+
         playBeep(600, 'sine', 0.2, 0.04);
+
       } else {
-        el.classList.add('bg-red-950/80', 'text-red-300', 'border', 'border-red-500/50');
+        el.classList.add(
+          'bg-red-950/80',
+          'text-red-300',
+          'border',
+          'border-red-500/50'
+        );
+
         playBeep(150, 'sawtooth', 0.25, 0.04);
       }
     }
 
     function hideFeedback(step) {
       const el = document.getElementById(`step-${step}-feedback`);
-      if (el) el.classList.add('hidden');
+
+      if (el) {
+        el.classList.add('hidden');
+      }
     }
   </script>
 </body>
