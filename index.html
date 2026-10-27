@@ -180,7 +180,7 @@
 
 
     <!-- ========================================================================== -->
-    <!-- MÓDULO DE MINIJUEGOS DEL ESCAPE ROOM (SE ABRE AL TERMINAR SU CINEMÁTICA) -->
+    <!-- MÓDULO DE MINIJUEGOS DEL ESCAPE ROOM -->
     <!-- ========================================================================== -->
     <div id="game-container" class="hidden space-y-6 w-full">
 
@@ -199,7 +199,7 @@
           </div>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras[cite: 2]. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente)[cite: 2].
+            Ingresaste al consultorio de Patricio. Para acceder al laboratorio subterráneo, necesitás abrir su maletín personal con una clave de 4 cifras. Ordená los historiales clínicos según su <strong>año de ingreso cronológico</strong> (del más antiguo al más reciente).
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-6">
@@ -257,12 +257,12 @@
           </div>
 
           <p class="text-slate-300 text-sm sm:text-base leading-relaxed mb-6">
-            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto[cite: 13].
+            Accediste a la terminal de datos. Para abrir las celdas donde retienen a los animales, la consola de Patricio requiere verificar la premisa estadística principal del proyecto.
           </p>
 
           <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 space-y-4">
             <p class="text-slate-100 font-semibold text-base leading-snug">
-              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?[cite: 13]
+              ¿Cuál fue la tendencia social y demográfica clave analizada en Argentina entre 2012 y 2024 que motivó el trasfondo del universo?
             </p>
 
             <div class="space-y-3 pt-2">
@@ -273,7 +273,7 @@
 
               <label onclick="selectOptionStep2('b')" class="flex items-center gap-3 bg-slate-900 border border-slate-800 hover:border-slate-700 p-4 rounded-xl cursor-pointer transition">
                 <input type="radio" name="step2-option" value="b" class="accent-emerald-500">
-                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar[cite: 10, 13].</span>
+                <span class="text-sm text-slate-300">B) La sostenida caída de la natalidad humana y el rol de las mascotas asumiendo lugares de afecto familiar.</span>
               </label>
             </div>
           </div>
@@ -359,7 +359,7 @@
             ¡Ingresaste al reactor principal! Patricio programó la inyección masiva de la Vacuna Inerte. Combiná los 3 reactivos químicos en el orden exacto: <strong>1° Neuro-K (Inhibidor), 2° Sero-A (Estabilizador) y 3° Enzima-Z (Catalizador)</strong>.
           </p>
 
-          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 mb-6 space-y-4">
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6 space-y-4">
             <div class="text-xs font-mono text-slate-400">MEZCLA ACTUAL EN CÁMARA DE REACCIÓN:</div>
             
             <div id="chemical-sequence-display" class="flex items-center justify-center gap-3 p-4 bg-slate-900/90 rounded-xl min-h-[60px] font-mono text-sm text-emerald-400 border border-slate-800 flex-wrap">
@@ -447,12 +447,11 @@
 
   <!-- FOOTER -->
   <footer class="bg-lab-card/80 border-t border-lab-border py-4 text-center text-xs text-slate-500">
-    <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece[cite: 6]</p>
+    <p>Escape Room Digital • Historia 3: La Vacuna Inerte • Equipo Pecepece</p>
   </footer>
 
   <!-- SCRIPT INTEGRADO: CINEMÁTICA ANTES DE CADA JUEGO -->
   <script>
-    // Estructura de cinemáticas conectadas 1 a 1 antes de cada juego
     const storyCinematics = [
       {
         id: 0,
@@ -463,7 +462,7 @@
         icon: "🦝",
         subtitle: "Transmisión interceptada desde el pabellón de contención.",
         text: "Pasaron 7 años desde que los animales nos integramos a la sociedad. Hoy trabajamos como policías, bomberos y profesionales... pero alguien quiere arrebatarnos la libertad. Me dejé atrapar a propósito por la policía para contártelo: en nuestro último atraco al viejo veterinario Patricio, descubrimos su laboratorio secreto. Está fabricando la 'Vacuna Inerte' para volvernos sumisos. Mis amigos están encerrados ahí abajo. Seguí exactamente mis pistas para rescatarlos.",
-        targetGameStep: null // Inicia el juego en el Paso 1 al terminar
+        targetGameStep: null
       },
       {
         id: 1,
@@ -474,7 +473,7 @@
         icon: "🦊",
         subtitle: "Búsqueda de accesos en la superficie.",
         text: "Te infiltraste con éxito en el consultorio abandonado de Patricio. Para descender al laboratorio subterráneo, necesitás abrir su maletín personal. Una nota adhesiva pegada al costado indica que sus pacientes animales más antiguos guardan la clave secreta de 4 dígitos en estricto orden cronológico. ¡Revisá los expedientes rápidamente!",
-        targetGameStep: 1 // Abre el Desafío 1
+        targetGameStep: 1
       },
       {
         id: 2,
@@ -485,7 +484,7 @@
         icon: "👨‍⚕️",
         subtitle: "Registro informático en la consola central.",
         text: "¡Maletín abierto! Al girar la manivela, una compuerta secreta en el piso revela el laboratorio clandestino. Huele a químicos y jaulas frías. Frente a vos hay una terminal con gráficos sobre la caída de natalidad humana y el auge de mascotas. Para desactivar el bloqueo de las celdas, el sistema de seguridad te exige validar los datos sociológicos del caso.",
-        targetGameStep: 2 // Abre el Desafío 2
+        targetGameStep: 2
       },
       {
         id: 3,
@@ -496,7 +495,7 @@
         icon: "⚡",
         subtitle: "Transmisión de audio con interferencia.",
         text: "¡Terminal desbloqueada! Las celdas empiezan a destrabarse, pero las alarmas secundarias se encendieron. El sistema automático de la veterinaria sella las salidas. ¡Rápido! Hackeá la secuencia de botones del conducto de ventilación para limpiar el humo de contención antes de que llegue la patrulla canina.",
-        targetGameStep: 3 // Abre el Desafío 3
+        targetGameStep: 3
       },
       {
         id: 4,
@@ -507,7 +506,7 @@
         icon: "🧪",
         subtitle: "Neutralización del reactivo químico.",
         text: "Sortearon los conductos y están frente al tanque central de la 'Vacuna Inerte'. En la mesa hay frascos de reactivos y los cuadernos de notas de Patricio. Tenés que mezclar los tres compuestos químicos en el orden exacto para neutralizar la fórmula antes de que el veterinario regrese.",
-        targetGameStep: 4 // Abre el Desafío 4
+        targetGameStep: 4
       }
     ];
 
@@ -529,8 +528,8 @@
     const step4CorrectSequence = ['Neuro-K', 'Sero-A', 'Enzima-Z'];
 
     const hintsData = {
-      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185[cite: 2].",
-      2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar[cite: 10, 13].",
+      1: "Ordená las fichas según su año de ingreso (2058 -> 2059 -> 2061 -> 2062). Los sellos en ese orden forman el código 4185.",
+      2: "Recordá la premisa analizada en el proyecto: la constante caída de natalidad humana y el rol de las mascotas asumiendo el espacio afectivo familiar.",
       3: "La secuencia de herramientas es: Rojo (Linterna) ➔ Verde (Ganzúa) ➔ Azul (Llave) ➔ Rojo (Linterna).",
       4: "Seguí las instrucciones científicas: 1° Neuro-K (Inhibidor), 2° Sero-A (Estabilizador) y 3° Enzima-Z (Catalizador)."
     };
@@ -552,7 +551,6 @@
       });
     };
 
-    // --- FLUJO CINEMÁTICA ➔ JUEGO ---
     function renderCinematic(index) {
       const scene = storyCinematics[index];
       document.getElementById('scene-location').innerHTML = `
@@ -615,11 +613,9 @@
       const scene = storyCinematics[currentCinematicIndex];
       
       if (scene.targetGameStep === null) {
-        // Pasar a la primera cinemática con juego (Paso 1)
         currentCinematicIndex = 1;
         renderCinematic(1);
       } else {
-        // Ocultar cinemática y abrir el juego correspondiente
         document.getElementById('cinematic-container').classList.add('hidden');
         document.getElementById('game-container').classList.remove('hidden');
         nextStep(scene.targetGameStep);
@@ -627,7 +623,6 @@
     }
 
     function triggerCinematicForStep(stepNum) {
-      // Buscar la cinemática correspondiente al paso del juego
       const targetIndex = storyCinematics.findIndex(s => s.targetGameStep === stepNum);
       if (targetIndex !== -1) {
         currentCinematicIndex = targetIndex;
@@ -637,7 +632,6 @@
       }
     }
 
-    // --- AUDIO & TIMER ---
     let audioCtx = null;
     function playBeep(freq = 440, type = 'sine', duration = 0.05, vol = 0.03) {
       try {
@@ -722,7 +716,6 @@
       document.getElementById('hint-modal').classList.add('hidden');
     }
 
-    // --- LÓGICA DE JUEGO (PASOS 1 A 4) ---
     function selectPatientCard(name, date, stamp, element) {
       playBeep(350, 'triangle', 0.1, 0.03);
       const exists = step1SelectedCards.some(c => c.name === name);
@@ -764,7 +757,6 @@
       const isCorrect = userStamps.every((val, index) => val === correctStamps[index]);
       if (isCorrect) {
         showFeedback(1, '✅ ¡Código 4185 correcto! Maletín desbloqueado.', 'success');
-        // Al completar el Paso 1, lanza la cinemática del Paso 2 antes de ir al siguiente juego
         setTimeout(() => triggerCinematicForStep(2), 1200);
       } else {
         showFeedback(1, '❌ Secuencia cronológica incorrecta. Reiniciá el orden.', 'danger');
@@ -783,7 +775,6 @@
       }
       if (step2SelectedValue === 'b') {
         showFeedback(2, '✅ ¡Premisa validada! Celdas de retención abiertas.', 'success');
-        // Al completar el Paso 2, lanza la cinemática del Paso 3
         setTimeout(() => triggerCinematicForStep(3), 1200);
       } else {
         showFeedback(2, '❌ Respuesta incorrecta. La consola rechazó el intento.', 'danger');
@@ -833,7 +824,6 @@
 
       if (simonPlayerInput.length === simonSequence.length) {
         showFeedback(3, '✅ ¡Ductos desatascados! Sistema de ventilación desactivado.', 'success');
-        // Al completar el Paso 3, lanza la cinemática del Paso 4
         setTimeout(() => triggerCinematicForStep(4), 1200);
       }
     }
