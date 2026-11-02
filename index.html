@@ -83,7 +83,7 @@ tailwind.config = { theme: { extend: {
       </div>
     </div>
     <div class="flex items-center gap-3">
-      <button onclick="openInv()" class="bg-slate-950 border border-cyan-500/40 hover:border-cyan-400 px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5 transition" title="Inventario y pistas encontradas"><span>🎒</span><span class="text-cyan-300">Inventario</span><span id="inv-count" class="text-cyan-300 font-bold">0</span></button>
+      <button id="inv-btn" onclick="openInv()" class="bg-slate-950 border border-cyan-500/40 hover:border-cyan-400 px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5 transition" title="Inventario y pistas encontradas"><span>🎒</span><span class="text-cyan-300">Inventario</span><span id="inv-count" class="text-cyan-300 font-bold">0</span></button>
       <div class="bg-slate-950 border border-lab-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5"><i data-lucide="timer" class="w-3.5 h-3.5 text-emerald-400"></i><span id="timer-display" class="text-emerald-400 font-bold">00:00</span></div>
       <div class="bg-slate-950 border border-lab-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5" title="Pistas utilizadas"><i data-lucide="lightbulb" class="w-3.5 h-3.5 text-amber-400"></i><span id="hints-count-display" class="text-amber-400 font-bold">0</span></div>
       <div class="bg-slate-950 border border-lab-border px-3 py-1.5 rounded-lg font-mono text-xs flex items-center gap-1.5" title="Alarma: cada fallo la sube; cada 3 fallos llega la patrulla (+20 s)"><i data-lucide="siren" class="w-3.5 h-3.5 text-rose-400"></i><span id="fails-count-display" class="text-rose-400 font-bold">0</span></div>
@@ -120,7 +120,7 @@ tailwind.config = { theme: { extend: {
         <p id="dialogue-text" class="font-mono text-sm md:text-base text-slate-100 leading-relaxed min-h-[70px]"></p>
         <div class="w-full flex justify-between items-center mt-3 pt-2 border-t border-borravino-light/20 gap-2 flex-wrap">
           <span class="text-xs text-slate-400 font-mono">💡 Tip: Usá la barra espaciadora o el botón para avanzar.</span>
-          <span id="typing-indicator" class="font-mono text-xs text-lab-gold animate-pulse">HAZ CLIC EN CONTINUAR ➔</span>
+          <span id="typing-indicator" class="font-mono text-xs text-lab-gold animate-pulse">HAZ CLIC EN CONTINUAR ⬇</span>
         </div>
       </div>
     </div>
@@ -152,12 +152,8 @@ tailwind.config = { theme: { extend: {
     <!-- 2: TERMINAL -->
     <section id="step-2" class="hidden"><div class="panel">
       <div class="head"><div><span class="eyebrow">Desafío 2 / Subnivel -1</span><h2 class="ttl">Terminal de Administración</h2></div><button onclick="showHint(2)" class="hint-btn">💡 Pedir Pista</button></div>
-      <p class="txt">La terminal reconoció tu tarjeta, pero la sesión está bloqueada. Escribí comandos para explorar los archivos. <strong>Todo lo que leas queda guardado en tu 🎒 Inventario</strong>, y lo vas a necesitar más adelante. Escribí <code class="text-emerald-300">help</code> para empezar.</p>
-      <div class="term mb-3">
-        <div id="term-out"></div>
-        <div class="flex items-center gap-2 border-t border-emerald-900/60 px-3 py-2"><span class="text-emerald-400 font-mono">&gt;</span><input id="term-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="escribí un comando y Enter..."></div>
-      </div>
-      <div id="term-chips" class="flex flex-wrap gap-2 mb-6"></div>
+      <p id="t2-intro" class="txt"></p>
+      <div id="t2-body"></div>
       <div id="step-2-feedback" class="fb hidden"></div>
     </div></section>
 
@@ -213,7 +209,7 @@ tailwind.config = { theme: { extend: {
     <!-- 6: SERVIDOR -->
     <section id="step-6" class="hidden"><div class="panel">
       <div class="head"><div><span class="eyebrow">Desafío 6 / Sala del Servidor</span><h2 class="ttl">Protocolo de Apagado Central</h2></div><button onclick="showHint(6)" class="hint-btn">💡 Pedir Pista</button></div>
-      <p class="txt">La clave tiene <strong>4 especies distintas</strong> en un orden secreto. La ficha técnica de la vacuna dice de dónde salen. Tras cada intento, el servidor responde: <strong>🟢</strong> especie correcta en su lugar, <strong>🟡</strong> especie correcta en otro lugar. Tenés 8 intentos antes de que la clave se reinicie.</p>
+      <p class="txt">La clave tiene <strong>4 especies distintas</strong> en un orden secreto. La ficha técnica de la vacuna dice de dónde salen. Tras cada intento, el servidor marca cada animal: <strong>🟢</strong> está en su lugar, <strong>🟡</strong> está en la clave pero en otro lugar, <strong>🔴</strong> no está en la clave. Tenés 8 intentos antes de que la clave se reinicie.</p>
       <div class="box text-center space-y-4">
         <div class="lbl">INTENTOS RESTANTES: <span id="mm-tries" class="text-amber-400"></span></div>
         <div id="mm-slots" class="flex justify-center gap-3"></div>
@@ -253,8 +249,18 @@ tailwind.config = { theme: { extend: {
   <div class="bg-lab-card border border-amber-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
     <div class="flex items-center gap-2 text-amber-400 font-bold mb-3"><i data-lucide="lightbulb" class="w-5 h-5"></i><span id="hint-title" class="font-orbitron text-sm"></span></div>
     <p id="hint-text-display" class="text-slate-300 text-sm mb-2 leading-relaxed"></p>
-    <p class="text-xs text-rose-400 font-mono mb-6">Cada pista suma 30 segundos al cronómetro.</p>
+    <p id="hint-note" class="text-xs text-rose-400 font-mono mb-6"></p>
     <div class="flex justify-end"><button onclick="closeHintModal()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm transition font-orbitron">Entendido</button></div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR PISTA -->
+<div id="hint-confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+  <div class="bg-lab-card border border-amber-500/50 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+    <div class="flex items-center gap-2 text-amber-400 font-bold mb-3"><i data-lucide="lightbulb" class="w-5 h-5"></i><span class="font-orbitron text-sm">¿Usar una pista?</span></div>
+    <p class="text-slate-300 text-sm mb-2 leading-relaxed">Si la usás, se suman <strong class="text-rose-400">30 segundos</strong> al cronómetro y cuenta como pista usada.</p>
+    <p id="hint-confirm-left" class="text-xs text-slate-400 font-mono mb-6"></p>
+    <div class="flex justify-end gap-3"><button onclick="closeHintConfirm()" class="btn-sec">Cancelar</button><button onclick="confirmHint()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm transition font-orbitron">Usar pista (+30 s)</button></div>
   </div>
 </div>
 
@@ -306,7 +312,7 @@ function renderCinematic(i) {
   const img = $('character-avatar');
   img.onerror = function () { this.onerror = null; this.src = 'https://placehold.co/200x200/5e2e46/ffd166?text=PERSONAJE'; };
   img.src = s.avatar;
-  $('btn-cinematic-text').textContent = s.step === null ? "COMENZAR INFILTRACIÓN" : "¡IR A RESOLVER EL DESAFÍO!";
+  $('btn-cinematic-text').textContent = i === 0 ? "COMENZAR INFILTRACIÓN" : "CONTINUAR";
   typewrite(s.text);
 }
 
@@ -397,7 +403,6 @@ function nextStep(n) {
     $('final-rank').textContent = pts <= 4 ? 'S' : pts <= 9 ? 'A' : 'B';
     beep(800, 'sine', 0.5, 0.05);
   } else beep(440, 'sine', 0.15, 0.03);
-  if (n === 2) later(() => $('term-in').focus(), 100);
   lucide.createIcons();
 }
 
@@ -423,7 +428,8 @@ let inv = [];
 function addInv(id) {
   if (inv.includes(id)) return;
   inv.push(id); $('inv-count').textContent = inv.length;
-  toast(`🎒 Nuevo en el inventario: ${INV_DEFS[id].title}`);
+  toast(`🎒 Guardado en el inventario: ${INV_DEFS[id].title}`);
+  const b = $('inv-btn'); b.classList.add('ring-2', 'ring-cyan-400', 'animate-pulse'); later(() => b.classList.remove('ring-2', 'ring-cyan-400', 'animate-pulse'), 2200);
 }
 function openInv() {
   const list = $('inv-list');
@@ -439,9 +445,9 @@ const hintsData = {
   1: ["Hay que cruzar dos papeles: el libro de turnos dice CUÁNDO fue capturado cada uno y el plano de jaulas dice DÓNDE está.",
       "Ordená a los cuatro de la captura más antigua a la más reciente. Si coincide el año, desempatá por mes.",
       "El orden es: Ventilador rojo ➔ Rumu ➔ Brad ➔ Amélie. Ahora buscá el número de jaula de cada uno."],
-  2: ["Empezá con help y leé los archivos con cat. El memo explica cómo está protegida la clave.",
-      "El desplazamiento del cifrado es la cantidad de celdas OCUPADAS (mirá celdas.log). Se usa así: descifrar clave.enc <número>.",
-      "El número es 4. Escribí: descifrar clave.enc 4, y después desbloquear con la palabra que aparezca."],
+  2: [() => term.unlocked ? SAVE_HINT : "Abrí memo.txt y celdas.log: el memo explica cómo está protegida la clave.",
+      () => term.unlocked ? SAVE_HINT : "El desplazamiento del cifrado es la cantidad de celdas OCUPADAS (mirá celdas.log).",
+      () => term.unlocked ? SAVE_HINT : "Son 4 celdas ocupadas: en clave.enc retrocedé 4 lugares y escribí la palabra que aparezca."],
   3: ["El plano eléctrico está en tu Inventario (🎒), archivo plano.txt. Se genera nuevo en cada partida.",
       "Elegí un cable y después tocá el borne al que va. Si te equivocás, se desconecta todo.",
       () => `Dato: el cable Rojo va al borne ${wireMap.rojo} y el Azul al borne ${wireMap.azul}.`],
@@ -455,14 +461,29 @@ const hintsData = {
       () => hintMM(0), () => hintMM(2), () => hintMM(1)]
 };
 
+const SAVE_HINT = "Abrí cada archivo y tocá «Guardar en inventario». Cuando los 3 estén guardados, podés cerrar la sesión.";
+let pendingHint = null;
 function showHint(step) {
   const arr = hintsData[step], lvl = hintLevels[step] || 0;
-  const h = arr[Math.min(lvl, arr.length - 1)];
+  if (lvl >= arr.length) return renderHint(step, arr.length - 1, true); // ya usaste todas: se repite la última, sin costo
+  pendingHint = step;
+  $('hint-confirm-left').textContent = `Pistas usadas en este desafío: ${lvl} / ${arr.length}`;
+  $('hint-confirm-modal').classList.remove('hidden'); $('hint-confirm-modal').classList.add('flex');
+}
+function closeHintConfirm() { $('hint-confirm-modal').classList.add('hidden'); $('hint-confirm-modal').classList.remove('flex'); }
+function confirmHint() {
+  const step = pendingHint; closeHintConfirm(); if (step === null) return;
+  const lvl = hintLevels[step] || 0;
   hintLevels[step] = lvl + 1;
   hintsUsed++; seconds += 30; updateTimer();
   $('hints-count-display').textContent = hintsUsed;
-  $('hint-title').textContent = `Pista ${Math.min(lvl + 1, arr.length)} / ${arr.length}`;
+  renderHint(step, lvl, false);
+}
+function renderHint(step, idx, free) {
+  const arr = hintsData[step], h = arr[idx];
+  $('hint-title').textContent = `Pista ${idx + 1} / ${arr.length}`;
   $('hint-text-display').textContent = typeof h === 'function' ? h() : h;
+  $('hint-note').textContent = free ? 'Ya usaste todas las pistas de este desafío: se repite la última, sin costo.' : 'Se sumaron 30 segundos al cronómetro.';
   $('hint-modal').classList.remove('hidden'); $('hint-modal').classList.add('flex');
   beep(300, 'sine', 0.15, 0.03);
 }
@@ -515,91 +536,64 @@ function verifyStep1() {
   }
 }
 
-// ============ DESAFÍO 2: TERMINAL (comandos + cifrado César + trama de la historia) ============
-const PRE = ['leeme.txt', 'memo.txt', 'celdas.log', 'clave.enc'];
-const POST = ['fondos.log', 'vacuna.txt', 'plano.txt'];
+// ============ DESAFÍO 2: TERMINAL (descifrar la clave + guardar archivos en el inventario) ============
 const CLAVE = 'COLLAR';
 const caesar = (t, k) => t.replace(/[A-Z]/g, c => String.fromCharCode(((c.charCodeAt(0) - 65 + (k % 26) + 26) % 26) + 65));
 const CLAVE_ENC = caesar(CLAVE, 4); // 4 = celdas ocupadas
-let term = { unlocked: false, read: new Set(), hist: [], hi: 0 };
+const PRE = [['memo.txt', '📄 memo.txt'], ['celdas.log', '📄 celdas.log'], ['clave.enc', '🔒 clave.enc']];
+const POST = { 'fondos.log': 'fondos', 'vacuna.txt': 'vacuna', 'plano.txt': 'plano' };
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+let term = { unlocked: false, saved: new Set(), file: 'memo.txt', shift: 0, keyText: '' };
 
 const termFiles = {
-  'leeme.txt': () => `TERMINAL DE ADMINISTRACIÓN — SUBNIVEL -1\nTarjeta de acceso reconocida.\nLa sesión está bloqueada: para abrir las celdas hace falta la clave de administración.\nComandos disponibles: escribí help.`,
-  'memo.txt': () => `De: Dr. Patricio\nPara: mí mismo\n\n"Siempre olvido la clave, así que la dejé en clave.enc con cifrado César: cada letra está corrida hacia adelante tantos lugares como celdas OCUPADAS haya (ver celdas.log). Para leerla hay que retroceder esa cantidad de lugares."`,
+  'memo.txt': () => `De: Dr. Patricio\n\n"Siempre olvido la clave, así que la dejé en clave.enc. Cada letra está corrida hacia adelante tantos lugares como celdas OCUPADAS haya (ver celdas.log). Para leerla, hay que retroceder esa cantidad."`,
   'celdas.log': () => `ESTADO DE CELDAS\nCELDA 1  OCUPADA  Rumu (Labrador)\nCELDA 2  libre\nCELDA 3  libre\nCELDA 4  OCUPADA  Ventilador rojo (Cardenal)\nCELDA 5  OCUPADA  Amélie (Zorra ártica)\nCELDA 6  libre\nCELDA 7  libre\nCELDA 8  OCUPADA  Brad (Gato)`,
-  'clave.enc': () => `TEXTO CIFRADO: ${CLAVE_ENC}`,
   'fondos.log': () => `FONDOS DEL PROYECTO "VACUNA INERTE"\n2056-03 | Fundación Arca del Hogar | $ 4.200.000  | "Estudios de docilidad"\n2057-09 | Fundación Arca del Hogar | $ 9.800.000  | "Prototipo de inhibidor"\n2060-01 | Fundación Arca del Hogar | $ 21.500.000 | "Ensayos con sujetos capturados"\n\nMensaje de la Fundación: "Los collares rompieron el orden de la casa. La caída de los nacimientos humanos hizo que las mascotas ocuparan el lugar de los hijos, y ahora ocupan también el de la policía. Hay que devolver cada cosa a su sitio."\nFirmado: ██████████ (Directorio)`,
   'vacuna.txt': () => `VACUNA INERTE — FICHA TÉCNICA\nObjetivo: apagar el collar traductor y la voluntad del animal (estado "inerte").\n\nComponentes (nombre en clave → función):\n  Neuro-K  → inhibidor\n  Sero-A   → estabilizador\n  Enzima-Z → catalizador\n  Beta-M   → acelerador (descartado: inestable)\n  Cloro-X  → residuo tóxico\n  Gluco-R  → residuo inerte\n\nOrden de mezcla: ver cuaderno junto al tanque.\nSeguridad: el servidor central se cierra con las ESPECIES de los 4 sujetos de prueba, en un orden que cambia en cada reinicio.`,
   'plano.txt': () => `PLANO ELÉCTRICO — PANEL DE COMPUERTAS (PASILLO B)\n${WIRES.map(w => `Cable ${w.name.toUpperCase()}  →  borne ${wireMap[w.id]}`).join('\n')}\n\nAdvertencia: una conexión incorrecta provoca cortocircuito.`
 };
 
-function tp(text, color) {
-  const d = document.createElement('div'); d.textContent = text; if (color) d.style.color = color;
-  $('term-out').appendChild(d); $('term-out').scrollTop = 1e9;
-}
-function termAvail() { return term.unlocked ? [...PRE, ...POST] : PRE; }
-function renderChips() {
-  const cmds = ['help', 'ls', ...termAvail().map(f => `cat ${f}`)];
-  $('term-chips').innerHTML = cmds.map(c => `<button class="chip" onclick="runCmd('${c}')">${c}</button>`).join('');
-}
-function initTerm() {
-  term = { unlocked: false, read: new Set(), hist: [], hi: 0 };
-  $('term-out').innerHTML = '';
-  tp('SUBNIVEL -1 — TERMINAL DE ADMINISTRACIÓN');
-  tp('Tarjeta de acceso reconocida. Sesión bloqueada.');
-  tp('Escribí help para ver los comandos.\n');
-  renderChips(); hideFeedback(2);
-}
-function runCmd(raw) {
-  const line = raw.trim(); if (!line) return;
-  tp('> ' + line, '#e2e8f0'); beep(500, 'square', 0.04, 0.02);
-  const [cmd, ...args] = line.split(/\s+/), c = cmd.toLowerCase(), avail = termAvail();
-  const RED = '#fda4af';
-  if (c === 'help') {
-    tp('Comandos:\n  ls                          lista los archivos\n  cat <archivo>               muestra un archivo\n  descifrar <archivo> <n>     retrocede n lugares cada letra (cifrado César)\n  desbloquear <clave>         intenta abrir la sesión\n  salir                       cierra la sesión (cuando terminaste)\n  clear                       limpia la pantalla');
-  } else if (c === 'ls') {
-    tp(avail.join('   '));
-  } else if (c === 'cat') {
-    const f = (args[0] || '').toLowerCase();
-    if (!f) tp('Uso: cat <archivo>', RED);
-    else if (!avail.includes(f)) tp(`cat: ${f}: no existe o acceso denegado`, RED);
-    else {
-      tp(termFiles[f]());
-      if (POST.includes(f)) { term.read.add(f); addInv(f === 'fondos.log' ? 'fondos' : f === 'vacuna.txt' ? 'vacuna' : 'plano'); }
-    }
-  } else if (c === 'descifrar') {
-    const f = (args[0] || '').toLowerCase(), n = parseInt(args[1], 10);
-    if (!f || isNaN(n)) tp('Uso: descifrar <archivo> <n>   (ej: descifrar clave.enc 3)', RED);
-    else if (!avail.includes(f)) tp(`descifrar: ${f}: no existe`, RED);
-    else if (f !== 'clave.enc') tp('Ese archivo no está cifrado.', RED);
-    else tp(`Resultado con n=${n}: ${caesar(CLAVE_ENC, -n)}`);
-  } else if (c === 'desbloquear') {
-    const k = (args[0] || '').toUpperCase();
-    if (term.unlocked) tp('La sesión ya está desbloqueada.');
-    else if (!k) tp('Uso: desbloquear <clave>', RED);
-    else if (k === CLAVE) {
-      term.unlocked = true; addInv('clave'); beep(700, 'sine', 0.3, 0.04);
-      tp('ACCESO CONCEDIDO. Liberando celdas...', '#6ee7b7');
-      tp('Se habilitaron nuevos archivos: ' + POST.join(', '));
-      tp('Leelos todos: la conexión se corta al salir.');
-      renderChips();
-    } else { addFail(); tp('CLAVE INCORRECTA.', RED); beep(150, 'sawtooth', 0.25, 0.04); }
-  } else if (c === 'salir') {
-    if (!term.unlocked) tp('La sesión sigue bloqueada. Primero tenés que desbloquearla.', RED);
-    else {
-      const left = POST.filter(f => !term.read.has(f));
-      if (left.length) tp(`Todavía hay archivos sin leer: ${left.join(', ')}. No vas a poder volver a conectarte.`, RED);
-      else {
-        tp('Cerrando sesión...');
-        showFeedback(2, '✅ Celdas abiertas y archivos copiados a tu inventario.', 'success');
-        later(() => triggerCinematicForStep(3), 1400);
-      }
-    }
-  } else if (c === 'clear') {
-    $('term-out').innerHTML = '';
+function renderStep2() {
+  const intro = $('t2-intro'), body = $('t2-body');
+  if (!term.unlocked) {
+    intro.innerHTML = `La terminal reconoció tu tarjeta, pero la sesión está bloqueada. <strong>1.</strong> Abrí los archivos y descubrí la clave. <strong>2.</strong> Escribila abajo para desbloquear.`;
+    const view = term.file === 'clave.enc'
+      ? `<div class="lbl">clave.enc</div><p class="font-mono text-emerald-300 mb-3">TEXTO CIFRADO: ${CLAVE_ENC}</p>
+         <div class="flex items-center gap-3 flex-wrap"><span class="text-sm text-slate-300">Retroceder cada letra</span>
+         <button class="btn-sec" style="padding:.25rem 1rem" onclick="t2Shift(-1)">−</button><span class="font-orbitron text-xl text-white w-8 text-center">${term.shift}</span><button class="btn-sec" style="padding:.25rem 1rem" onclick="t2Shift(1)">+</button><span class="text-sm text-slate-300">lugares</span></div>
+         <p class="font-mono mt-3 text-slate-300">Resultado: <span class="text-emerald-300 text-lg">${caesar(CLAVE_ENC, -term.shift)}</span></p>`
+      : `<div class="lbl">${term.file}</div><pre class="font-mono text-xs sm:text-sm text-slate-300 whitespace-pre-wrap" style="overflow-wrap:anywhere">${esc(termFiles[term.file]())}</pre>`;
+    body.innerHTML = `<div class="flex flex-wrap gap-2 mb-3">${PRE.map(([f, t]) => `<button class="tab ${term.file === f ? 'on' : ''}" onclick="t2File('${f}')">${t}</button>`).join('')}</div>
+      <div class="box min-h-[140px]">${view}</div>
+      <div class="box"><div class="lbl">CLAVE DE ADMINISTRACIÓN</div>
+        <div class="flex gap-2"><input id="clave-in" value="${esc(term.keyText)}" oninput="term.keyText=this.value" onkeydown="if(event.key==='Enter')tryUnlock()" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Escribí la palabra..." class="flex-1 min-w-0 bg-slate-900 border border-slate-700 focus:border-emerald-500 outline-none rounded-xl px-3 py-2 font-mono text-emerald-300 uppercase">
+        <button class="btn-main flex-none px-5" onclick="tryUnlock()">🔓 Desbloquear</button></div></div>`;
   } else {
-    tp(`${cmd}: comando no reconocido. Escribí help.`, RED);
+    intro.innerHTML = `✅ ¡Sesión desbloqueada! Hay 3 archivos nuevos. <strong>Tocá «Guardar en inventario» en cada uno</strong>: los vas a necesitar en los próximos desafíos y no vas a poder volver a esta terminal.`;
+    body.innerHTML = `<div class="space-y-3 mb-4">${Object.keys(POST).map(f => { const saved = term.saved.has(f);
+      return `<div class="box !mb-0"><div class="flex justify-between items-center gap-2 flex-wrap"><span class="font-mono text-sm text-cyan-300">📄 ${f}</span>
+        <button class="tab ${saved ? 'on' : ''}" ${saved ? 'disabled' : ''} onclick="saveFile('${f}')">${saved ? '✅ Guardado en inventario' : '🎒 Guardar en inventario'}</button></div>
+        <pre class="mt-3 font-mono text-xs text-slate-300 whitespace-pre-wrap" style="overflow-wrap:anywhere">${esc(termFiles[f]())}</pre></div>`; }).join('')}</div>
+      <div class="lbl text-center">🎒 GUARDADOS: ${term.saved.size} / 3</div>
+      <div class="flex flex-wrap gap-3 mb-4"><button class="btn-sec" onclick="openInv()">🎒 Ver inventario</button><button class="btn-main" onclick="t2Exit()">🚪 Cerrar sesión y salir</button></div>`;
   }
+}
+function initTerm() { term = { unlocked: false, saved: new Set(), file: 'memo.txt', shift: 0, keyText: '' }; renderStep2(); hideFeedback(2); }
+function t2File(f) { term.file = f; beep(350, 'triangle', 0.08, 0.03); renderStep2(); }
+function t2Shift(d) { term.shift = Math.min(25, Math.max(0, term.shift + d)); beep(400 + term.shift * 20, 'triangle', 0.06, 0.03); renderStep2(); }
+function tryUnlock() {
+  const k = term.keyText.trim().toUpperCase();
+  if (!k) return showFeedback(2, 'Escribí la clave de administración.', 'danger');
+  if (k === CLAVE) {
+    term.unlocked = true; addInv('clave'); hideFeedback(2); beep(700, 'sine', 0.3, 0.04); renderStep2();
+  } else { addFail(); showFeedback(2, '❌ Clave incorrecta. Revisá el memo y el estado de las celdas.', 'danger'); }
+}
+function saveFile(f) { term.saved.add(f); addInv(POST[f]); beep(600, 'sine', 0.12, 0.03); hideFeedback(2); renderStep2(); }
+function t2Exit() {
+  const left = 3 - term.saved.size;
+  if (left > 0) return showFeedback(2, `Guardá los ${left} archivo${left > 1 ? 's' : ''} que faltan en tu 🎒 Inventario antes de salir: no vas a poder volver.`, 'danger');
+  showFeedback(2, '✅ Celdas abiertas y archivos guardados en tu inventario.', 'success');
+  later(() => triggerCinematicForStep(3), 1400);
 }
 
 // ============ DESAFÍO 3: CABLEADO (usa el plano.txt de la terminal) ============
@@ -728,19 +722,19 @@ function renderMM() {
   $('mm-tries').textContent = MM_TRIES - mmHist.length;
   $('mm-slots').innerHTML = [0, 1, 2, 3].map(i => `<div class="slot">${mmGuess[i] !== undefined ? SYM[mmGuess[i]][0] : '<span class="text-slate-600 text-base">?</span>'}</div>`).join('');
   $('mm-palette').innerHTML = SYM.map((s, i) => `<button class="sym" ${mmGuess.includes(i) ? 'disabled' : ''} onclick="mmPick(${i})" title="${s[1]}">${s[0]}</button>`).join('');
-  $('mm-history').innerHTML = mmHist.map((h, n) => `<div class="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-lg px-4 py-2"><span class="text-slate-500">#${n + 1}</span><span class="text-2xl tracking-widest">${h.g.map(i => SYM[i][0]).join(' ')}</span><span>🟢 ${h.e} &nbsp; 🟡 ${h.n}</span></div>`).reverse().join('');
+  const COL = { g: '#22c55e', y: '#eab308', r: '#ef4444' };
+  $('mm-history').innerHTML = mmHist.map((h, n) => `<div class="flex items-center gap-4 bg-slate-950 border border-slate-800 rounded-lg px-4 py-2"><span class="text-slate-500 w-8">#${n + 1}</span><div class="flex gap-5 flex-1 justify-center">${h.g.map((s, i) => `<div class="flex flex-col items-center gap-1" title="${SYM[s][1]}"><span class="text-3xl">${SYM[s][0]}</span><span class="dot" style="background:${COL[h.r[i]]}"></span></div>`).join('')}</div></div>`).reverse().join('');
 }
 function mmPick(i) { if (mmGuess.length >= 4 || mmGuess.includes(i)) return; beep(450, 'triangle', 0.08, 0.03); mmGuess.push(i); renderMM(); }
 function mmUndo() { mmGuess.pop(); renderMM(); }
 function mmSubmit() {
   if (mmGuess.length < 4) return showFeedback(6, 'Completá las 4 posiciones de la clave.', 'danger');
   const e = mmGuess.filter((g, i) => g === mmCode[i]).length;
-  const n = mmGuess.filter((g, i) => g !== mmCode[i] && mmCode.includes(g)).length;
   if (e === 4) {
     renderMM(); showFeedback(6, '🖥️ ¡Clave aceptada! Servidor apagado. La señal de sumisión se detuvo.', 'success');
     return later(() => nextStep(TOTAL + 1), 1500);
   }
-  mmHist.push({ g: [...mmGuess], e, n }); mmGuess = [];
+  mmHist.push({ g: [...mmGuess], r: mmGuess.map((g, i) => g === mmCode[i] ? 'g' : mmCode.includes(g) ? 'y' : 'r') }); mmGuess = [];
   hideFeedback(6); renderMM(); beep(220, 'square', 0.12, 0.03);
   if (mmHist.length >= MM_TRIES) {
     addFail(); showFeedback(6, '🔄 Sin intentos: el servidor reinició la clave. ¡Probá de nuevo!', 'danger');
@@ -761,7 +755,7 @@ function restartGame() {
   renderStep1(); initTerm(); newWires(); renderStep5(); simonHud(); newMM();
   updateTimer(); setProgress(0); cineIdx = 0; renderCinematic(0);
   $('game-container').classList.add('hidden'); $('cinematic-container').classList.remove('hidden');
-  closeHintModal(); closeInv(); startTimer();
+  closeHintModal(); closeHintConfirm(); closeInv(); startTimer();
 }
 
 // ============ INICIO ============
@@ -769,11 +763,6 @@ window.onload = () => {
   lucide.createIcons();
   renderStep1(); newWires(); initTerm(); renderStep5(); simonHud(); newMM();
   renderCinematic(0); setProgress(0); startTimer();
-  $('term-in').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { const v = e.target.value; if (v.trim()) { term.hist.push(v); term.hi = term.hist.length; } e.target.value = ''; runCmd(v); }
-    else if (e.key === 'ArrowUp' && term.hist.length) { term.hi = Math.max(0, term.hi - 1); e.target.value = term.hist[term.hi]; e.preventDefault(); }
-    else if (e.key === 'ArrowDown' && term.hist.length) { term.hi = Math.min(term.hist.length, term.hi + 1); e.target.value = term.hist[term.hi] || ''; e.preventDefault(); }
-  });
   document.addEventListener('keydown', e => {
     if (!$('cinematic-container').classList.contains('hidden') && (e.code === 'Space' || e.code === 'ArrowRight')) { e.preventDefault(); advanceCinematic(); }
   });
